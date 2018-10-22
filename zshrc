@@ -17,7 +17,7 @@ POTION=~/git/remote/potion/bin
 
 export GOPATH=~/Projects/go
 export GEM_PATH=${HOME}/.gem
-export PATH="$HOME/.local/bin:/usr/texbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Library/Haskell/bin:$POTION:$GOPATH/bin:${HOME}/.gem/bin"
+export PATH="$HOME/.local/bin:/usr/texbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Library/Haskell/bin:$POTION:$GOPATH/bin:${HOME}/.gem/bin:${PATH}"
 
 source $ZSH/oh-my-zsh.sh
 if [ -r $HOME/.zshrc.local ]; then
