@@ -21,8 +21,6 @@ if [ -r $HOME/.zshrc.local ]; then
     source $HOME/.zshrc.local
 fi
 
-alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
-
 # Pager for nicer work with Git logs
 export PAGER='less -R -X -e'
 
