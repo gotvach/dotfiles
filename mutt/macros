@@ -1,0 +1,13 @@
+macro index "\em" "<limit>~p<enter>"
+macro index "\Cr" "T~U<enter><tag-prefix><clear-flag>N<untag-pattern>.<enter>" "mark all messages as read"
+
+macro index gi "<change-folder>=INBOX<enter>" "Go to inbox"
+bind  index,pager gr group-reply
+
+# Fix Mac + iTerm
+bind  index,pager  previous-line
+
+bind pager k  previous-line
+bind pager j  next-line
+bind pager gg top
+bind pager G  bottom

@@ -1,0 +1,54 @@
+# ~/.muttrc
+auto_view text/html
+alternative_order text/plain text/enriched text/html
+set ssl_use_tlsv1         = no
+set ssl_use_tlsv1_1       = no
+set certificate_file      = ~/.mutt/certificates
+
+source ~/.mutt/accountrc
+
+set edit_headers
+set editor                = vim
+set use_from              = yes
+set envelope_from         = yes
+
+set spoolfile             = "imaps://$my_smtp_server/Inbox"
+set folder                = "imaps://$my_smtp_server"
+set from                  = "$my_from"
+set realname              = "$my_realname"
+set signature             = "~/.mutt/signature"
+
+# IMAP
+set imap_user             = "$my_imap_user"
+set imap_pass             = "$my_imap_password"
+set imap_keepalive        = 300   # Set lower if connection times out
+set imap_idle
+set mail_check            = 60
+# set imap_authenticators = "gssapi:login:cram_md5"
+
+# dirs
+set header_cache          = "~/.mutt/$my_account_name/cache/headers"
+set message_cachedir      = "~/.mutt/$my_account_name/cache/bodies"
+set postponed             = "~/.mutt/$my_account_name/postponed"
+set tmpdir                = "~/.mutt/$my_account_name/tmp"
+
+# Formatting
+set date_format           = "%d/%m"
+set index_format          = "%2C |%2N| [%Z]  %D  %-20.20F  %s"
+set pager_index_lines     = 10
+set pager_context         = 3
+set pager_stop
+set text_flowed           = yes
+
+# Text view first
+set smart_wrap            = yes
+set reverse_name          = yes
+set reverse_realname      = yes
+set editor                = "vim +/^$ ++1"
+
+set sendmail              = "~/homebrew/bin/msmtp"
+
+source "~/.mutt/vombatidae.muttrc"
+source "~/.mutt/macros"
+source "~/.mutt/scores-f1fox"
+

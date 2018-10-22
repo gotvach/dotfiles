@@ -1,0 +1,59 @@
+"*":
+  "atom-package-deps":
+    ignored: []
+  "autocomplete-python":
+    useKite: false
+  core:
+    audioBeep: false
+    disabledPackages: [
+      "linter"
+    ]
+    telemetryConsent: "limited"
+    themes: [
+      "one-dark-ui"
+      "base16-tomorrow-dark-theme"
+    ]
+  editor:
+    autoIndent: false
+  "exception-reporting":
+    userId: "657b645c-7327-40af-ac3a-a3ed78c260f0"
+  "go-plus":
+    panel:
+      currentHeight: "23.97094430992736vh"
+      currentWidth: "46.80555555555556vw"
+  "linter-puppet-lint":
+    automaticFix: true
+    executablePath: "~/.gem/bin/puppet-lint"
+    oldVersion: false
+  "linter-ui-default":
+    panelHeight: 233
+  minimap: {}
+  "node-debugger":
+    nodePath: "/usr/local/bin/node"
+  "process-palette":
+    shell: "/bin/zsh"
+  runner:
+    scopes:
+      coffee: "coffee"
+      go: "go run"
+      js: "node"
+      python: "python"
+      ruby: "ruby"
+      shell: "bash"
+  "split-diff":
+    colors:
+      addedColor: "#1b5218"
+      overrideThemeColors: true
+      removedColor: "#80211c"
+  "terminal-plus":
+    core:
+      scrollback: 10000
+    toggles:
+      autoClose: true
+  "vim-mode-plus":
+    flashOnOperate: false
+    flashOnSearch: false
+    flashOnUndoRedo: false
+    flashScreenOnSearchHasNoMatch: false
+  welcome:
+    showOnStartup: false

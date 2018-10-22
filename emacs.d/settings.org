@@ -1,0 +1,422 @@
+#+LaTeX_HEADER: \usepackage{tcolorbox}
+#+LaTeX_HEADER: \usepackage{listings}
+#+LaTeX_HEADER: \tcbuselibrary{listings}
+#+LaTeX_HEADER: \newtcblisting{commandline}{ listing engine=listings, colback=black,  colframe=black!70,  left=1mm }
+
+
+* Emacs
+
+Disable audible bell
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq ring-bell-function 'ignore)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+ ;; (hc-toggle-highlight-trailing-whitespace t)
+#+END_SRC
+* Path
+
+Useful with MacTeX
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Set PATH to include some MacTex binaries (i.e. pdflatex)
+  (setenv "PATH"
+          (concat
+          "/usr/local/bin" ":"
+          "/usr/local/texlive/2015/bin/universal-darwin/" ":"
+          "/Library/TeX/texbin" ":"
+            (getenv "PATH")))
+
+#+END_SRC
+
+Fix doc-view mode (maybe)
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq exec-path (append exec-path '("/usr/local/bin/")))
+#+END_SRC
+
+* UTF
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; Grant's Special config
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+#+END_SRC
+
+* Mac hacks
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; Print 'hash' character on Mac OS X
+(global-set-key (kbd "S-3") (lambda () (interactive) (insert "#")))
+(global-set-key (kbd "M-3") "#")
+#+END_SRC
+
+* Org Block Theme
+
+Theme the ~#+BEGIN_~ blocks
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+(defface org-block-begin-line
+  '((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
+  "Face used for the line delimiting the begin of source blocks.")
+
+(defface org-block-background
+  '((t (:background "#FFFFEA")))
+  "Face used for the source block background.")
+
+(defface org-block-end-line
+  '((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF")))
+  "Face used for the line delimiting the end of source blocks.")
+#+END_SRC
+
+* Org Mode bootstrap
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; org-mode configuration
+  (eval-after-load "org"
+    '(progn
+       (setq org-directory "~/git/local/grant/notes/")
+       (define-key org-mode-map (kbd "C-c a") 'org-agenda)
+       (load "~/.emacs.d/org-todo.el")
+       (load "~/.emacs.d/org-refile.el")
+       (load "~/.emacs.d/org-capture.el")))
+
+#+END_SRC
+
+** Useability
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+(setq org-indent-mode t)
+(setq auto-complete-mode t)
+#+END_SRC
+
+* Org Mode Tweaks
+** Export SRC blocks as listings in latex
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (require 'ox-latex)
+  ;(add-to-list 'org-latex-packages-alist '("" "listings"))
+  ;(add-to-list 'org-latex-packages-alist '("" "color"))
+  ;(add-to-list 'org-latex-packages-alist '("" "minted"))
+  ; (setq org-latex-listings t)
+  ;(setq org-latex-listings 'listings)
+#+END_SRC
+
+** Enable Emacs Speaks Statistics
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;;(require 'org-special-blocks)
+  ;;(require 'ess-site)
+#+END_SRC
+
+** SRC block for emacs-lisp with tangle
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-to-list
+   'org-structure-template-alist
+   '("et" "#+BEGIN_SRC emacs-lisp :tangle yes\n?\n#+END_SRC" "<src lang=\"?\">\n\n</src>")
+   )
+#+END_SRC
+
+** SRC block for LaTeX
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-to-list
+   'org-structure-template-alist
+   '("lh" "#+LaTeX_HEADER: ?" "<literal style=\"latex\">?</latex>")
+   '("lc" "#+LaTeX_CLASS: ?" "<literal style=\"latex\">?</latex>")
+   )
+#+END_SRC
+
+** Attribute headings
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-to-list
+   'org-structure-template-alist
+   '("al" "#+ATTR_LaTeX: ?" "")
+   '("ah" "#+ATTR_HTML: ?" "")
+   )
+#+END_SRC
+
+** Log TODO state changes into Drawer
+
+Clock changes and task state changes get logged to ~:LOGBOOK:~ by default.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq org-log-into-drawer t)
+#+END_SRC
+
+** Table \emsp reformat
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun my-org-clocktable-indent-string (level)
+    (if (= level 1)
+        ""
+      (let ((str "`"))
+        (while (> level 2)
+          (setq level (1- level)
+                str (concat str "--")))
+        (concat str "-> "))))
+
+  (advice-add 'org-clocktable-indent-string :override #'my-org-clocktable-indent-string)
+#+END_SRC
+
+** Minted
+
+Try to assign some defaults to all minted block styling, specifically fontsize.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;   (setq org-export-latex-listings 'minted)
+;   (setq org-export-latex-minted-options
+;         '(("fontsize" "\\footnotesize")
+;           ("linenos"  "")
+;           ("frame"    "lines"))
+;         )
+;   (setq org-export-latex-custom-lang-environments
+;         '(
+;           (emacs-lisp "common-lispcode")
+;           ))
+#+END_SRC
+
+* Backup files
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; Backup
+(setq auto-save-file-name-transforms
+      `((".*" ,(concat user-emacs-directory "auto-save/") t)))
+(setq backup-directory-alist
+      `(("." . ,(expand-file-name
+                 (concat user-emacs-directory "backups")))))
+(put 'set-goal-column 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+#+END_SRC
+
+* LaTeX
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; Set location of TeX Live installation (BasicTex)
+  (if (eq window-system 'ns)
+    (add-to-list 'exec-path "/Library/TeX/texbin"))
+  ;(setq tex-start-options "-shell-escape")
+  (setq tex-pdf-mode t)
+#+END_SRC
+
+* PDFLaTeX
+
+Add ~-shell-escape~ to default pdflatex options. Enabled to allow pygmentize (external Python) to work.
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;(setq org-pdf-latex-process '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+  ;(setq org-latex-pdf-process '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+  (setq org-latex-pdf-process '("texi2dvi --shell-escape -V --clean -p -b %f" "texi2dvi --shell-escape -V --clean -p -b %f" "texi2dvi --shell-escape -V --clean -p -b %f"))
+
+  ;(setq org-latex-pdf-process
+  ;     '("xelatex %f && bibtex %f && xelatex %f && xelatex %f")
+;; ;; http://emacs.stackexchange.com/questions/5945/export-latex-pdf-and-loose-references-how-to-fix
+;; (setq org-latex-pdf-process
+;;        '("pdflatex -pdflatex='pdflatex -interaction nonstopmode'  -bibtex -f -pdf %f"))
+;;        '("latexmk -pdf %f"))
+;;       '("xelatex %f && bibtex %f && xelatex %f && xelatex %f")
+;;       '("pdflatex -interaction nonstopmode %b"
+;;        "bibtex %b"
+;;        "pdflatex -interaction nonstopmode %b"
+;;        "pdflatex -interaction nonstopmode %b"))
+;;       '("rubber -d --into %o %f"))
+;;        (quote ("texi2dvi -p -b -V %f"))
+;;       '("texi2dvi --pdf --clean --verbose --batch %f"
+;;         "bibtex %b" "texi2dvi --pdf --clean --verbose --batch %f"
+;;         "texi2dvi --pdf --clean --verbose --batch %f")
+#+END_SRC
+
+* Doc View
+** Enable auto revert mode
+
+Automatically refresh rendered documents when the source file is compiled
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'doc-view-mode-hook 'auto-revert-mode)
+#+END_SRC
+
+* Autocomplete Mode
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; auto-complete
+(require 'popup)
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete/dict")
+#+END_SRC
+
+** Autocomplete sources
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+(set-default 'ac-sources
+	     '(ac-source-abbrev
+	       ac-source-dictionary
+	       ac-source-yasnippet
+	       ac-source-words-in-buffer
+	       ac-source-words-in-same-mode-buffers
+	       ac-source-semantic))
+
+(ac-config-default)
+#+END_SRC
+
+** Autocomplete language modes
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+(dolist (m '(c-mode c++-mode java-mode))
+  (add-to-list 'ac-modes m))
+#+END_SRC
+
+** Global Autocomplete mode
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+(global-auto-complete-mode t)
+(put 'upcase-region 'disabled nil)
+#+END_SRC
+
+* Expand Region
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; Expand region
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+(global-set-key (kbd "C--") 'er/contract-region)
+#+END_SRC
+
+* Multiple Cursors
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; Multiple cursors
+(require 'multiple-cursors)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-+") 'mc/mark-all-like-this)
+#+END_SRC
+
+* Set Mac Meta key
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; Make the Mac command key the meta key
+(setq mac-command-key-is-meta t)
+(setq mac-command-modifier 'meta)
+#+END_SRC
+
+* Tab settings
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; Tab stop 4 rather than 8
+(setq default-tab-width 4)
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+
+* Org Babel languages
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; Org babel setup - needs to be outside 'custom-set-variables' block to take effect.
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '(
+   ;; (R . t)
+   (C . t)
+   (ditaa . t)
+   (dot . t)
+   (java . t)
+   (perl . t)
+   (python . t)
+   (ruby . t)
+   (screen . t)
+   (sh . t)
+   ))
+
+(setq org-export-babel-evaluate nil)
+#+END_SRC
+* Haskell
+
+** Enable Haskell Indentation
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+#+END_SRC
+
+** Interactive Commands
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (custom-set-variables
+   '(haskell-process-suggest-remove-import-lines t)
+   '(haskell-process-auto-import-loaded-modules t)
+   '(haskell-process-log t))
+  (eval-after-load 'haskell-mode
+    '(progn
+       (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+       (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+       (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
+       (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
+       (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
+       (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
+       (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
+  (eval-after-load 'haskell-cabal
+    '(progn
+       (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+       (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+       (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+       (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
+#+END_SRC
+
+** Use Cabal REPL
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ;; (custom-set-variables '(haskell-process-type 'cabal-repl))
+#+END_SRC
+
+** Compiling
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (eval-after-load 'haskell-mode
+    '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))
+  (eval-after-load 'haskell-cabal
+    '(define-key haskell-cabal-mode-map (kbd "C-c C-o") 'haskell-compile))
+#+END_SRC
+
+** Add Cabal bin to PATH
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (let ((my-cabal-path (expand-file-name "~/.cabal/bin")))
+    (setenv "PATH" (concat my-cabal-path ":" (getenv "PATH")))
+    (add-to-list 'exec-path my-cabal-path))
+#+END_SRC
+
+** Autoload GHC
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;;  (autoload 'ghc-init "ghc" nil t)
+;;  (autoload 'ghc-debug "ghc" nil t)
+;;  (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+#+END_SRC
+** Company mode autocomplete
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (require 'company)
+  (add-hook 'haskell-mode-hook 'company-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;;  (add-to-list 'company-backends 'company-ghc)
+#+END_SRC
+** Dash
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+(global-set-key "\C-cd" 'dash-at-point)
+(global-set-key "\C-ce" 'dash-at-point-with-docset)
+#+END_SRC
+* Flymake
+** Puppet
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  ; Start puppet-mode when editing a .pp file
+  (autoload 'puppet-mode "puppet-mode" "Major mode for editing puppet manifests")
+  (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
+  (require 'flymake-puppet)
+  (add-hook 'puppet-mode-hook (lambda () (flymake-puppet-load)))
+#+END_SRC
