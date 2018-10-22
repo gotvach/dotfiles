@@ -1,0 +1,13 @@
+tmux_send_keys_all_windows() {
+    for win in $(tmux list-windows -F '#W'); do
+        tmux send-keys -t $win "$@";
+    done
+}
+
+if [ -r $HOME/.zshrc.api ]; then
+    . $HOME/.zshrc.api
+fi
+
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
