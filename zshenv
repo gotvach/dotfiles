@@ -33,3 +33,6 @@ alias gdp='git diff production..'
 alias gdps='gdp --stat'
 alias gdm='git diff master..'
 alias gdms='gdm --stat'
+
+alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+
