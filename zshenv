@@ -4,7 +4,7 @@ if [[ -n $VIRTUAL_ENV && -e "${VIRTUAL_ENV}/bin/activate" ]]; then
 fi
 
 export VAGRANT_DEFAULT_PROVIDER=virtualbox
-export PATH=${PATH}:${HOME}/Library/Python/3.7/bin:/usr/local/opt/mysql-client/bin
+export PATH="${HOME}/miniconda3/bin:/usr/local/opt/mysql-client/bin:${PATH}"
 export EDITOR=nvim
 
 # Vagrant aliases
