@@ -1,4 +1,4 @@
-set runtimepath^=~/.neovim runtimepath+=~/.neovim/after
+" set runtimepath^=~/.neovim runtimepath+=~/.neovim/after
 let &packpath = &runtimepath
 
 """""""""""
@@ -18,27 +18,11 @@ set pastetoggle=<F3>
 set t_Co=256
 set tabstop=4 shiftwidth=4 expandtab
 
-" colorscheme antares
-" colorscheme CandyPaper
-" colorscheme DevC++
-" colorscheme Light
-" colorscheme LightDefault
-" colorscheme monokai
-" colorscheme PaperColor
-" colorscheme revolution
-" colorscheme Tomorrow-Night
-" colorscheme Tomorrow-Night-Eighties
-" colorscheme wombat256i
-" colorscheme zen
-" colorscheme zenburn
-" colorscheme znake
-colorscheme molokai
-
 """""""""""
 " Plugins "
 """""""""""
 
-call plug#begin('~/.neovim/plugged')
+call plug#begin('~/.local/share/nvim/plugged')
 if has('nvim')
     " Completion
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -76,6 +60,26 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 
 call plug#end()
+
+"""""""""""""""
+" Colorshemes "
+"""""""""""""""
+
+" colorscheme antares
+" colorscheme CandyPaper
+" colorscheme DevC++
+" colorscheme Light
+" colorscheme LightDefault
+" colorscheme monokai
+" colorscheme PaperColor
+" colorscheme revolution
+" colorscheme Tomorrow-Night
+" colorscheme Tomorrow-Night-Eighties
+" colorscheme wombat256i
+" colorscheme zen
+" colorscheme zenburn
+" colorscheme znake
+colorscheme molokai
 
 """""""""""""
 " Variables "
