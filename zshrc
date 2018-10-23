@@ -16,8 +16,9 @@ plugins=(git docker docker-machine docker-compose kitchen aws kubectl minikube h
 POTION=~/git/remote/potion/bin
 
 export GOPATH=~/Projects/go
-export GEM_PATH=${HOME}/.gem
-export PATH="$HOME/.local/bin:/usr/texbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Library/Haskell/bin:$POTION:$GOPATH/bin:${HOME}/.gem/bin:${PATH}"
+export RUBY_VER=2.3.0
+export GEM_PATH=${HOME}/.gem/ruby/${RUBY_VER}
+export PATH="$HOME/.local/bin:/usr/texbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Library/Haskell/bin:$POTION:$GOPATH/bin:${GEM_PATH}/bin:${PATH}"
 
 source $ZSH/oh-my-zsh.sh
 if [ -r $HOME/.zshrc.local ]; then
