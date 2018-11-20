@@ -28,7 +28,7 @@ set completeopt=noinsert,menuone,noselect
 call plug#begin('~/.local/share/nvim/plugged')
 if has('nvim')
     " Completion
-"	Plug 'python-mode/python-mode', { 'branch': 'develop' }
+"   Plug 'python-mode/python-mode', { 'branch': 'develop' }
     Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'Shougo/neco-vim'          " VIM command completion
     Plug 'autozimu/LanguageClient-neovim', {
@@ -157,7 +157,7 @@ let g:UltiSnipsExpandTrigger       = "<Plug>(ultisnips_expand_or_jump)"
 augroup AutocompleteGroup
     au!
     autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
-	autocmd BufEnter * call ncm2#enable_for_buffer()
+    autocmd BufEnter * call ncm2#enable_for_buffer()
     autocmd TextChangedI * call ncm2#auto_trigger()
 augroup END
 
