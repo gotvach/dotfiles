@@ -50,6 +50,8 @@ Plug 'roxma/nvim-yarp'
 Plug 'ncm2/ncm2-go'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-jedi'
+Plug 'ncm2/ncm2-path'
+Plug 'ncm2/ncm2-syntax'
 Plug 'ncm2/ncm2-vim'
 Plug 'ncm2/ncm2-ultisnips'
 
@@ -136,16 +138,11 @@ let g:syntastic_check_on_wq = 0
 let g:syntastic_mode_map={'mode': 'active', 'passive_filetypes': ['haskell']}
 let g:syntastic_puppet_puppet_args = '--parser=future'
 let g:syntastic_yaml_checkers = ['yamllint']
-"
-" let g:UltiSnipsExpandTrigger = "<C-e>"
+
 let g:UltiSnipsListSnippets = "<C-l>"
 let g:UltiSnipsEditSplit = "vertical"
-" let g:UltiSnipsListSnippets = "<C-tab>"
 let g:UltiSnipsRemoveSelectModeMappings = 0
-
-let g:UltiSnipsExpandTrigger       = "<Plug>(ultisnips_expand_or_jump)"
-" let g:UltiSnipsJumpForwardTrigger  = "<Plug>(ultisnips_expand_or_jump)"
-" let g:UltiSnipsJumpBackwardTrigger = "<S-Tab>"
+let g:UltiSnipsExpandTrigger = "<Plug>(ultisnips_expand_or_jump)"
 
 
 """"""""""
@@ -186,8 +183,8 @@ augroup END
 
 augroup Vim
     au!
-    autocmd BufWritePost ~/.config/nvim/init.vim* :source %
-    autocmd BufWrite ~/.vimrc source %
+    autocmd BufWritePost init.vim* source %
+    autocmd BufWrite .vimrc source %
 augroup END
 
 augroup YAML
