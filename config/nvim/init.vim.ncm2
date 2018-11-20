@@ -1,0 +1,243 @@
+set runtimepath^=~/.neovim runtimepath+=~/.neovim/after
+let &packpath = &runtimepath
+
+"""""""""""
+" General "
+"""""""""""
+let localleader= ','
+let mapleader = ','
+let maplocalleader = ','
+set autoread
+set background=dark
+set completeopt=longest,menuone,preview
+set foldmethod=marker
+set updatetime=100
+set laststatus=2
+set number relativenumber
+set omnifunc=syntaxcomplete#Complete
+set pastetoggle=<F3>
+set t_Co=256
+set tabstop=4 shiftwidth=4 expandtab
+set completeopt=noinsert,menuone,noselect
+
+" colorscheme antares
+" colorscheme CandyPaper
+" colorscheme DevC++
+" colorscheme Light
+" colorscheme LightDefault
+" colorscheme monokai
+" colorscheme PaperColor
+" colorscheme revolution
+" colorscheme Tomorrow-Night
+" colorscheme Tomorrow-Night-Eighties
+" colorscheme wombat256i
+" colorscheme zen
+" colorscheme zenburn
+" colorscheme znake
+colorscheme molokai
+
+"""""""""""
+" Plugins "
+"""""""""""
+
+call plug#begin('~/.neovim/plugged')
+if has('nvim')
+    " Completion
+"	Plug 'python-mode/python-mode', { 'branch': 'develop' }
+    Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
+    Plug 'Shougo/neco-vim'          " VIM command completion
+    Plug 'autozimu/LanguageClient-neovim', {
+        \ 'branch': 'next',
+        \ 'do': 'bash install.sh',
+        \ }
+
+    Plug 'neomake/neomake'
+    Plug 'Shougo/neco-syntax'
+
+    " Display
+    Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
+endif
+
+"""""""""""""""""
+"  NCM2 config  "
+"""""""""""""""""
+Plug 'ncm2/ncm2'
+Plug 'roxma/nvim-yarp'
+Plug 'ncm2/ncm2-go'
+Plug 'ncm2/ncm2-python'
+Plug 'ncm2/ncm2-vim'
+Plug 'ncm2/ncm2-ultisnips'
+
+Plug 'airblade/vim-gitgutter'
+Plug 'brooth/far.vim'
+Plug 'fatih/vim-go'
+Plug 'flazz/vim-colorschemes'
+Plug 'godlygeek/tabular'
+Plug 'honza/vim-snippets'
+Plug 'itchyny/lightline.vim'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'ncm2/ncm2-ultisnips'
+Plug 'rizzatti/dash.vim'
+Plug 'sheerun/vim-polyglot'
+Plug 'SirVer/ultisnips'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+
+call plug#end()
+
+"""""""""""""
+" Variables "
+"""""""""""""
+" See output of :checkhealth
+
+let g:LanguageClient_loggingFile="/Users/grant/language-client.log"
+let g:LanguageClient_loggingLevel="WARNING"
+let g:LanguageClient_serverCommands = {
+    \ 'dockerfile': ['docker-langserver', '--stdio'],
+    \ 'python': ['/Users/grant/.pyenv/versions/pyls'],
+    \ 'go': ['/Users/grant/Projects/go/bin/go-langserver', '-gocodecompletion'],
+    \ }
+let g:lightline = {
+    \   'colorscheme': 'deus',
+    \   'active': {
+    \       'left': [ [ 'mode', 'paste' ],
+    \                 [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
+    \   },
+    \   'component_function': {
+    \       'fugitive': 'fugitive#head'
+    \   }
+    \ }
+let g:pymode_python = 'python3'
+let g:python_host_prog  = '/Users/grant/.pyenv/versions/py2neovim/bin/python'
+let g:python3_host_prog = '/Users/grant/.pyenv/versions/py3neovim/bin/python'
+
+if !exists('g:necovim#complete_functions')
+    let g:necovim#complete_functions = {}
+endif
+let g:necovim#complete_functions.Ref = 'ref#complete'
+" let g:UltiSnipsExpandTrigger = "<C-e>"
+let g:UltiSnipsListSnippets = "<C-l>"
+let g:UltiSnipsEditSplit = "vertical"
+" let g:UltiSnipsListSnippets = "<C-tab>"
+let g:UltiSnipsRemoveSelectModeMappings = 0
+
+let g:UltiSnipsExpandTrigger       = "<Plug>(ultisnips_expand_or_jump)"
+let g:UltiSnipsJumpForwardTrigger  = "<Plug>(ultisnips_expand_or_jump)"
+let g:UltiSnipsJumpBackwardTrigger = "<S-Tab>"
+
+
+""""""""""
+" Groups "
+""""""""""
+
+" Autocomplete
+augroup AutocompleteGroup
+    au!
+    autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+	autocmd BufEnter * call ncm2#enable_for_buffer()
+    autocmd BufWrite init.vim source %
+    autocmd BufWrite .vimrc source %
+augroup END
+
+" Language
+augroup LanguageGroup
+    au!
+    autocmd BufWritePost *.go GoImports
+    autocmd BufWritePost *.go GoBuild
+    autocmd FileType go :call GoMaps()
+    autocmd FileType * :call LC_maps()
+augroup END
+
+"""""""""""
+" Keymaps "
+"""""""""""
+
+" Use jk to escape from insert to normal mode
+inoremap jk <esc>
+
+" Quickly close other/this split(s)
+nnoremap <leader>o <C-w>o
+nnoremap <leader>c <C-w>c
+
+" use <TAB> to select the popup menu:
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<Plug>(ultisnips_try_expand)")
+" inoremap <silent> <expr> <Tab> ncm2_ultisnips#expand_or("\<CR>", 'n')
+inoremap <silent> <expr> <CR> pumvisible() ? ncm2_ultisnips#expand_or("\<Plug>(ultisnips_try_expand)") : "\<CR>"
+inoremap <silent> <Plug>(ultisnips_try_expand) <C-R>=<SID>UltiSnipsExpandOrJumpOrTab()<CR>
+snoremap <silent> <Tab> <Esc>:call UltiSnips#ExpandSnippetOrJump()<cr>
+" inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+
+" Editor config
+nnoremap <leader>ev :vsplit ~/.config/nvim/init.vim<CR>
+
+" FZF
+nnoremap <C-p> :Files<CR>
+
+" LanguageClient ?
+nnoremap [e :cprevious<CR>
+nnoremap ]e :cnext<CR>
+
+" NERDTree same as Atom - <Alt-\>
+map « :NERDTreeToggle<CR>
+
+" GitGutterToggle - <Alt-g>
+map © :GitGutterToggle<CR>
+
+"""""""""""""
+" Functions "
+"""""""""""""
+
+" run :GoBuild or :GoTestCompile based on the go file
+function! s:build_go_files()
+  let l:file = expand('%')
+  if l:file =~# '^\f\+_test\.go$'
+    call go#test#Test(0, 1)
+  elseif l:file =~# '^\f\+\.go$'
+    call go#cmd#Build(0)
+  endif
+endfunction
+
+" Go Development Mappings
+function! GoMaps()
+    echomsg "Loading mappgings for Golang Development!"
+    nmap <leader>gg :<C-u>call <SID>build_go_files()<cr>
+    nmap <leader>gb <Plug>(go-build)
+    nmap <leader>gt <Plug>(go-test)
+    nmap <leader>gr <Plug>(go-run)
+endfunction
+
+" LanguageClient
+function! LC_maps()
+    if has_key(g:LanguageClient_serverCommands, &filetype)
+        nnoremap <F5> :call LanguageClient_contextMenu()<cr>
+        nnoremap <buffer> <silent> K :call LanguageClient#textDocument_hover()<cr>
+        nnoremap <buffer> <silent> gd :call LanguageClient#textDocument_definition()<cr>
+        nnoremap <buffer> <silent> <F2> :call LanguageClient#textDocument_rename()<cr>
+    endif
+endfunction
+
+function! s:UltiSnipsExpandOrJumpOrTab()
+  call UltiSnips#ExpandSnippetOrJump()
+  if g:ulti_expand_or_jump_res > 0
+    return ""
+  else
+    return "\<Tab>"
+  endif
+endfunction
+
+""""""""""""""""""""""""""""""
+" Overrides / customisations "
+""""""""""""""""""""""""""""""
+" fzf's preview use of Ag: https://stackoverflow.com/a/50730458
+command! -bang -nargs=* Ag
+  \ call fzf#vim#ag(<q-args>,
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview(),
+  \                 <bang>0)
