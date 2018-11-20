@@ -127,6 +127,15 @@ if !exists('g:necovim#complete_functions')
     let g:necovim#complete_functions = {}
 endif
 let g:necovim#complete_functions.Ref = 'ref#complete'
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_mode_map={'mode': 'active', 'passive_filetypes': ['haskell']}
+let g:syntastic_puppet_puppet_args = '--parser=future'
+let g:syntastic_yaml_checkers = ['yamllint']
+"
 " let g:UltiSnipsExpandTrigger = "<C-e>"
 let g:UltiSnipsListSnippets = "<C-l>"
 let g:UltiSnipsEditSplit = "vertical"
@@ -147,17 +156,41 @@ augroup AutocompleteGroup
     au!
     autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 	autocmd BufEnter * call ncm2#enable_for_buffer()
-    autocmd BufWrite init.vim source %
-    autocmd BufWrite .vimrc source %
 augroup END
 
 " Language
-augroup LanguageGroup
-    au!
+augroup Golang
     autocmd BufWritePost *.go GoImports
     autocmd BufWritePost *.go GoBuild
+augroup end
+
+augroup LanguageGroup
+    au!
     autocmd FileType go :call GoMaps()
     autocmd FileType * :call LC_maps()
+
+    autocmd FileType gitcommit set tw=70
+    autocmd FileType java setlocal omnifunc=javacomplete#Complete
+    autocmd FileType json set et ts=2 sw=2 omnifunc=jsoncomplete#CompletePacker
+    autocmd FileType ruby :call <SID>RubyConfig()
+    autocmd FileType yaml set et ts=2 sw=2
+augroup END
+
+augroup Snippets
+    au!
+    autocmd FileType json :call UltiSnips#AddFiletypes('packer')
+augroup END
+
+augroup Vim
+    au!
+    autocmd BufWritePost ~/.config/nvim/init.vim* :source %
+    autocmd BufWrite ~/.vimrc source %
+augroup END
+
+augroup YAML
+    au!
+    autocmd BufReadPost *.eyaml setlocal ft=yaml | call <SID>yamlSetup()
+    autocmd FileType yaml :call <SID>yamlSetup()
 augroup END
 
 """""""""""
@@ -185,6 +218,7 @@ snoremap <silent> <Tab> <Esc>:call UltiSnips#ExpandSnippetOrJump()<cr>
 
 " Editor config
 nnoremap <leader>ev :vsplit ~/.config/nvim/init.vim<CR>
+nnoremap <leader>eg :vsplit ~/.gitconfig<CR>
 
 " FZF
 nnoremap <C-p> :Files<CR>
@@ -230,6 +264,23 @@ function! LC_maps()
         nnoremap <buffer> <silent> gd :call LanguageClient#textDocument_definition()<cr>
         nnoremap <buffer> <silent> <F2> :call LanguageClient#textDocument_rename()<cr>
     endif
+endfunction
+
+function! s:RubyConfig()
+    set et ts=2 sw=2
+    set omnifunc=rubycomplete#Complete
+    let g:rubycomplete_buffer_loading = 1
+    let g:rubycomplete_classes_in_global = 1
+    let g:rubycomplete_rails = 1
+    compiler ruby
+endfunction
+
+function! s:yamlSetup()
+    setlocal foldmarker=s+[\"\]'a-z]*:,s+[\"\'a-z]*:
+    setlocal foldmethod=indent
+    setlocal foldlevel=0
+    setlocal foldlevelstart=0
+    setlocal foldenable
 endfunction
 
 function! s:UltiSnipsExpandOrJumpOrTab()
