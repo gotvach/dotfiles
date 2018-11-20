@@ -1,4 +1,4 @@
-set runtimepath^=~/.neovim runtimepath+=~/.neovim/after
+" set runtimepath^=~/.neovim runtimepath+=~/.neovim/after
 let &packpath = &runtimepath
 
 """""""""""
@@ -20,27 +20,11 @@ set t_Co=256
 set tabstop=4 shiftwidth=4 expandtab
 set completeopt=noinsert,menuone,noselect
 
-" colorscheme antares
-" colorscheme CandyPaper
-" colorscheme DevC++
-" colorscheme Light
-" colorscheme LightDefault
-" colorscheme monokai
-" colorscheme PaperColor
-" colorscheme revolution
-" colorscheme Tomorrow-Night
-" colorscheme Tomorrow-Night-Eighties
-" colorscheme wombat256i
-" colorscheme zen
-" colorscheme zenburn
-" colorscheme znake
-colorscheme molokai
-
 """""""""""
 " Plugins "
 """""""""""
 
-call plug#begin('~/.neovim/plugged')
+call plug#begin('~/.local/share/nvim/plugged')
 if has('nvim')
     " Completion
 "	Plug 'python-mode/python-mode', { 'branch': 'develop' }
@@ -64,7 +48,7 @@ endif
 Plug 'ncm2/ncm2'
 Plug 'roxma/nvim-yarp'
 Plug 'ncm2/ncm2-go'
-Plug 'ncm2/ncm2-python'
+Plug 'ncm2/ncm2-jedi'
 Plug 'ncm2/ncm2-vim'
 Plug 'ncm2/ncm2-ultisnips'
 
@@ -87,6 +71,26 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 
 call plug#end()
+
+""""""""""""""""""
+"  Colorschemes  "
+""""""""""""""""""
+" colorscheme antares
+" colorscheme CandyPaper
+" colorscheme DevC++
+" colorscheme Light
+" colorscheme LightDefault
+" colorscheme monokai
+" colorscheme PaperColor
+" colorscheme revolution
+" colorscheme Tomorrow-Night
+" colorscheme Tomorrow-Night-Eighties
+" colorscheme wombat256i
+" colorscheme zen
+" colorscheme zenburn
+" colorscheme znake
+colorscheme molokai
+
 
 """""""""""""
 " Variables "
@@ -111,8 +115,13 @@ let g:lightline = {
     \   }
     \ }
 let g:pymode_python = 'python3'
-let g:python_host_prog  = '/Users/grant/.pyenv/versions/py2neovim/bin/python'
-let g:python3_host_prog = '/Users/grant/.pyenv/versions/py3neovim/bin/python'
+if has('mac')
+    let g:python_host_prog  = expand('~/.pyenv/versions/py2neovim/bin/python')
+    let g:python3_host_prog = expand('~/.pyenv/versions/py3neovim/bin/python')
+elseif has('linux')
+    let g:python_host_prog  = expand('~/.virtualenvs/py2neovim/bin/python')
+    let g:python3_host_prog = expand('~/.virtualenvs/py3neovim/bin/python')
+endif
 
 if !exists('g:necovim#complete_functions')
     let g:necovim#complete_functions = {}
