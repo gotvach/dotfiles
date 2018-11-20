@@ -145,8 +145,8 @@ let g:UltiSnipsEditSplit = "vertical"
 let g:UltiSnipsRemoveSelectModeMappings = 0
 
 let g:UltiSnipsExpandTrigger       = "<Plug>(ultisnips_expand_or_jump)"
-let g:UltiSnipsJumpForwardTrigger  = "<Plug>(ultisnips_expand_or_jump)"
-let g:UltiSnipsJumpBackwardTrigger = "<S-Tab>"
+" let g:UltiSnipsJumpForwardTrigger  = "<Plug>(ultisnips_expand_or_jump)"
+" let g:UltiSnipsJumpBackwardTrigger = "<S-Tab>"
 
 
 """"""""""
@@ -158,6 +158,7 @@ augroup AutocompleteGroup
     au!
     autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 	autocmd BufEnter * call ncm2#enable_for_buffer()
+    autocmd TextChangedI * call ncm2#auto_trigger()
 augroup END
 
 " Language
@@ -208,16 +209,22 @@ nnoremap <leader>o <C-w>o
 nnoremap <leader>c <C-w>c
 
 " use <TAB> to select the popup menu:
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<Plug>(ultisnips_try_expand)")
 " inoremap <silent> <expr> <Tab> ncm2_ultisnips#expand_or("\<CR>", 'n')
-inoremap <silent> <expr> <CR> pumvisible() ? ncm2_ultisnips#expand_or("\<Plug>(ultisnips_try_expand)") : "\<CR>"
-inoremap <silent> <Plug>(ultisnips_try_expand) <C-R>=<SID>UltiSnipsExpandOrJumpOrTab()<CR>
-snoremap <silent> <Tab> <Esc>:call UltiSnips#ExpandSnippetOrJump()<cr>
+" inoremap <silent> <expr> <CR> pumvisible() ? ncm2_ultisnips#expand_or("\<Plug>(ultisnips_try_expand)") : "\<CR>"
+" inoremap <silent> <Plug>(ultisnips_try_expand) <C-R>=<SID>UltiSnipsExpandOrJumpOrTab()<CR>
+" snoremap <silent> <Tab> <Esc>:call UltiSnips#ExpandSnippetOrJump()<cr>
 " inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 " inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+
+" Snippet completion testing
+inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
 
 " Editor config
 nnoremap <leader>ev :vsplit ~/.config/nvim/init.vim<CR>
