@@ -10,7 +10,6 @@ let mapleader = ','
 let maplocalleader = ','
 set autoread
 set background=dark
-set completeopt=longest,menuone,preview
 set foldmethod=marker
 set updatetime=100
 set laststatus=2
