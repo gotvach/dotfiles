@@ -1,4 +1,4 @@
-" set runtimepath^=~/.neovim runtimepath+=~/.neovim/after
+set runtimepath^=~/.neovim runtimepath+=~/.neovim/after
 let &packpath = &runtimepath
 
 """""""""""
@@ -22,12 +22,14 @@ set tabstop=4 shiftwidth=4 expandtab
 " Plugins "
 """""""""""
 
-call plug#begin('~/.local/share/nvim/plugged')
+" call plug#begin('~/.local/share/nvim/plugged')
+call plug#begin('~/.neovim/plugged')
 if has('nvim')
     " Completion
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
     "Plug 'eagletmt/neco-ghc'       " Haskell completion
     Plug 'zchee/deoplete-jedi'      " Python completion
+    Plug 'zchee/deoplete-go'        " Go completion
 "	Plug 'python-mode/python-mode', { 'branch': 'develop' }
     Plug 'othree/jspc.vim', { 'for': ['javascript', 'javascript.jsx'] }
     Plug 'Shougo/neco-vim'          " VIM command completion
@@ -51,6 +53,7 @@ Plug 'honza/vim-snippets'
 Plug 'itchyny/lightline.vim'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'ncm2/ncm2-ultisnips'
 Plug 'rizzatti/dash.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'SirVer/ultisnips'
@@ -88,10 +91,13 @@ colorscheme molokai
 
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#sources = {}
-let g:deoplete#sources#python = ['ultisnips']
+let g:deoplete#sources._ = ['ultisnips','LanguageClient']
+" let g:LanguageClient_loggingFile="/Users/grant/language-client.log"
+" let g:LanguageClient_loggingLevel="INFO"
 let g:LanguageClient_serverCommands = {
     \ 'dockerfile': ['docker-langserver', '--stdio'],
-    \ 'python': ['~/.pyenv/versions/pyls/bin/pyls'],
+    \ 'python': ['/Users/grant/.pyenv/versions/pyls'],
+    \ 'go': ['/Users/grant/Projects/go/bin/go-langserver', '-gocodecompletion'],
     \ }
 let g:lightline = {
     \   'colorscheme': 'deus',
@@ -130,9 +136,6 @@ augroup END
 augroup LanguageGroup
     au!
     autocmd FileType * call LC_maps()
-    autocmd FileType python call deoplete#custom#option('sources', {
-                \ 'python': ['LanguageClient'],
-                \ })
 augroup END
 
 """""""""""

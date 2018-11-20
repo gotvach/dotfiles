@@ -5,6 +5,7 @@ fi
 
 export VAGRANT_DEFAULT_PROVIDER=virtualbox
 export PATH="${HOME}/miniconda3/bin:/usr/local/opt/mysql-client/bin:${PATH}"
+export PATH=/usr/local/opt/ruby/bin:$PATH
 export EDITOR=nvim
 
 # Vagrant aliases
