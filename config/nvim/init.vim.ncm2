@@ -1,3 +1,4 @@
+" vim:set et sw=4 ts=4 tw=78 ft=vim:
 " set runtimepath^=~/.neovim runtimepath+=~/.neovim/after
 let &packpath = &runtimepath
 
@@ -48,6 +49,7 @@ endif
 Plug 'ncm2/ncm2'
 Plug 'roxma/nvim-yarp'
 Plug 'ncm2/ncm2-go'
+Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-jedi'
 Plug 'ncm2/ncm2-vim'
 Plug 'ncm2/ncm2-ultisnips'
@@ -160,6 +162,7 @@ augroup END
 
 " Language
 augroup Golang
+    au!
     autocmd BufWritePost *.go GoImports
     autocmd BufWritePost *.go GoBuild
 augroup end
