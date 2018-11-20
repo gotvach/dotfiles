@@ -99,7 +99,7 @@ colorscheme molokai
 """""""""""""
 " See output of :checkhealth
 
-let g:LanguageClient_loggingFile="/Users/grant/language-client.log"
+let g:LanguageClient_loggingFile=expand("~/language-client.log")
 let g:LanguageClient_loggingLevel="WARNING"
 let g:LanguageClient_serverCommands = {
     \ 'dockerfile': ['docker-langserver', '--stdio'],
