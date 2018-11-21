@@ -18,7 +18,7 @@ set omnifunc=syntaxcomplete#Complete
 set pastetoggle=<F3>
 set t_Co=256
 set tabstop=4 shiftwidth=4 expandtab
-set completeopt=noinsert,menuone,noselect
+set completeopt=noinsert,menuone,noselect,preview
 
 """""""""""
 " Plugins "
@@ -164,6 +164,12 @@ augroup Golang
     autocmd BufWritePost *.go GoBuild
 augroup end
 
+augroup Graphviz
+    au!
+    autocmd FileType dot setlocal makeprg=dmake\ svg
+    autocmd BufWritePost *.dot silent make
+augroup end
+
 augroup LanguageGroup
     au!
     autocmd FileType go :call GoMaps()
@@ -294,7 +300,8 @@ function! s:UltiSnipsExpandOrJumpOrTab()
   if g:ulti_expand_or_jump_res > 0
     return ""
   else
-    return "\<Tab>"
+    " return "\<CR>"
+    return ""
   endif
 endfunction
 
