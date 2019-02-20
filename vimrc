@@ -50,7 +50,6 @@ Bundle "tpope/vim-unimpaired"
 Bundle "vim-airline/vim-airline"
 Bundle "vim-airline/vim-airline-themes"
 Bundle "vim-ruby/vim-ruby"
-Bundle "yogsototh/haskell-vim"
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required

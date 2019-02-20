@@ -228,6 +228,8 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <silent> <expr> <CR> pumvisible() ? ncm2_ultisnips#expand_or("\<C-e>", 'n') : "\<CR>"
 
 " Editor config
+nnoremap <leader>ac :vsplit ~/.ansible.cfg<CR>
+nnoremap <leader>ah :vsplit ~/git/hmpo/ghammond/scripts/ansible.hosts<CR>
 nnoremap <leader>ev :vsplit ~/.config/nvim/init.vim<CR>
 nnoremap <leader>eg :vsplit ~/.gitconfig<CR>
 
