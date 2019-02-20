@@ -62,10 +62,11 @@ Plug 'flazz/vim-colorschemes'
 Plug 'godlygeek/tabular'
 Plug 'honza/vim-snippets'
 Plug 'itchyny/lightline.vim'
+Plug 'juliosueiras/vim-terraform-completion'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
-Plug 'ncm2/ncm2-ultisnips'
 Plug 'rizzatti/dash.vim'
+Plug 'scrooloose/syntastic'
 Plug 'sheerun/vim-polyglot'
 Plug 'SirVer/ultisnips'
 Plug 'terryma/vim-multiple-cursors'
@@ -101,11 +102,11 @@ colorscheme molokai
 " See output of :checkhealth
 
 let g:LanguageClient_loggingFile=expand("~/language-client.log")
-let g:LanguageClient_loggingLevel="WARNING"
+let g:LanguageClient_loggingLevel="DEBUG"
 let g:LanguageClient_serverCommands = {
     \ 'dockerfile': ['docker-langserver', '--stdio'],
-    \ 'python': ['/Users/grant/.pyenv/versions/pyls'],
-    \ 'go': ['/Users/grant/Projects/go/bin/go-langserver', '-gocodecompletion'],
+    \ 'python': [expand('~/.pyenv/versions/pyls')],
+    \ 'go': [expand('~/Projects/go/bin/go-langserver'), '-gocodecompletion'],
     \ }
 let g:lightline = {
     \   'colorscheme': 'deus',
@@ -126,6 +127,7 @@ elseif has('linux')
     let g:python3_host_prog = expand('~/.virtualenvs/py3neovim/bin/python')
 endif
 
+let g:ncm2#popup_delay = 100
 if !exists('g:necovim#complete_functions')
     let g:necovim#complete_functions = {}
 endif
@@ -152,9 +154,9 @@ let g:UltiSnipsExpandTrigger = "<Plug>(ultisnips_expand_or_jump)"
 " Autocomplete
 augroup AutocompleteGroup
     au!
-    autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+    autocmd CompleteDone * if pumvisible() == 0 | pclose | endif
     autocmd BufEnter * call ncm2#enable_for_buffer()
-    autocmd TextChangedI * call ncm2#auto_trigger()
+    autocmd TextChangedP * call ncm2#auto_trigger()
 augroup END
 
 " Language
@@ -211,22 +213,19 @@ nnoremap <leader>o <C-w>o
 nnoremap <leader>c <C-w>c
 
 " use <TAB> to select the popup menu:
-" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<Plug>(ultisnips_try_expand)")
 " inoremap <silent> <expr> <Tab> ncm2_ultisnips#expand_or("\<CR>", 'n')
-" inoremap <silent> <expr> <CR> pumvisible() ? ncm2_ultisnips#expand_or("\<Plug>(ultisnips_try_expand)") : "\<CR>"
-" inoremap <silent> <Plug>(ultisnips_try_expand) <C-R>=<SID>UltiSnipsExpandOrJumpOrTab()<CR>
-" snoremap <silent> <Tab> <Esc>:call UltiSnips#ExpandSnippetOrJump()<cr>
 " inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 " inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
 
 " Snippet completion testing
-inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
+" inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+" inoremap <expr> <CR>  pumvisible() ? "\<C-y>" : "\<CR>"
+" inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
+inoremap <silent> <expr> <CR> pumvisible() ? ncm2_ultisnips#expand_or("\<C-e>", 'n') : "\<CR>"
 
 " Editor config
 nnoremap <leader>ev :vsplit ~/.config/nvim/init.vim<CR>
@@ -293,16 +292,6 @@ function! s:yamlSetup()
     setlocal foldlevel=0
     setlocal foldlevelstart=0
     setlocal foldenable
-endfunction
-
-function! s:UltiSnipsExpandOrJumpOrTab()
-  call UltiSnips#ExpandSnippetOrJump()
-  if g:ulti_expand_or_jump_res > 0
-    return ""
-  else
-    " return "\<CR>"
-    return ""
-  endif
 endfunction
 
 """"""""""""""""""""""""""""""
