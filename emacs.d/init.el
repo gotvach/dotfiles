@@ -14,7 +14,7 @@
  '(custom-enabled-themes (quote (cyberpunk)))
  '(custom-safe-themes
    (quote
-    ("923ee73494ea3611d2a1ff9f31bbf8d71b0b0cc2aeb4a6e0944ec6c83bc0ac23" "d1cc05d755d5a21a31bced25bed40f85d8677e69c73ca365628ce8024827c9e3" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" default)))
+    ("59e82a683db7129c0142b4b5a35dbbeaf8e01a4b81588f8c163bd255b76f4d21" "d1cc05d755d5a21a31bced25bed40f85d8677e69c73ca365628ce8024827c9e3" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "235dc2dd925f492667232ead701c450d5c6fce978d5676e54ef9ca6dd37f6ceb" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "e64111716b1c8c82638796667c2c03466fde37e69cada5f6b640c16f1f4e97df" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" default)))
  '(fci-rule-color "#49483E")
  '(flymake-gui-warnings-enabled nil)
  '(haskell-process-auto-import-loaded-modules t)
@@ -36,7 +36,7 @@
  '(hl-line-mode t t)
  '(icon-mode nil)
  '(ido-mode (quote both) nil (ido))
- '(initial-buffer-choice (quote resume))
+ '(initial-buffer-choice "~/.emacs.d/init.el")
  '(linum-format " %3d ")
  '(linum-mode t t)
  '(magit-diff-use-overlays nil)
@@ -66,6 +66,7 @@
    "puppet-lint --no-autoloader_layout-check --with-context --log-format \"%{path}:%{line}: %{kind}: %{message} (%{check})\"")
  '(server-mode t)
  '(show-paren-mode t)
+ '(startup-screen-inhibit-startup-screen t t)
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#A1EFE4" :weight bold))))
@@ -104,6 +105,7 @@
      (340 . "#2790C3")
      (360 . "#66D9EF"))))
  '(vc-annotate-very-old-color nil)
+ '(vc-follow-symlinks nil)
  '(weechat-color-list
    (quote
     (unspecified "#272822" "#49483E" "#A20C41" "#F92672" "#67930F" "#A6E22E" "#968B26" "#E6DB74" "#21889B" "#66D9EF" "#A41F99" "#FD5FF0" "#349B8D" "#A1EFE4" "#F8F8F2" "#F8F8F0"))))
