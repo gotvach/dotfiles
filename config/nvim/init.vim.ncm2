@@ -19,6 +19,7 @@ set pastetoggle=<F3>
 set t_Co=256
 set tabstop=4 shiftwidth=4 expandtab
 set completeopt=noinsert,menuone,noselect,preview
+set complete+=k
 
 """""""""""
 " Plugins "
@@ -37,6 +38,7 @@ if has('nvim')
 
     Plug 'neomake/neomake'
     Plug 'Shougo/neco-syntax'
+    Plug 'fgrsnau/ncm2-otherbuf', { 'branch': 'ncm2' }
 
     " Display
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -57,6 +59,7 @@ Plug 'ncm2/ncm2-ultisnips'
 
 Plug 'airblade/vim-gitgutter'
 Plug 'brooth/far.vim'
+Plug 'bronson/vim-trailing-whitespace'
 Plug 'fatih/vim-go'
 Plug 'flazz/vim-colorschemes'
 Plug 'godlygeek/tabular'
@@ -65,6 +68,8 @@ Plug 'itchyny/lightline.vim'
 Plug 'juliosueiras/vim-terraform-completion'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'ncm2/ncm2-ultisnips'
+Plug 'pearofducks/ansible-vim'
 Plug 'rizzatti/dash.vim'
 Plug 'scrooloose/syntastic'
 Plug 'sheerun/vim-polyglot'
@@ -101,13 +106,23 @@ colorscheme molokai
 """""""""""""
 " See output of :checkhealth
 
-let g:LanguageClient_loggingFile=expand("~/language-client.log")
-let g:LanguageClient_loggingLevel="DEBUG"
-let g:LanguageClient_serverCommands = {
-    \ 'dockerfile': ['docker-langserver', '--stdio'],
-    \ 'python': [expand('~/.pyenv/versions/pyls')],
-    \ 'go': [expand('~/Projects/go/bin/go-langserver'), '-gocodecompletion'],
-    \ }
+if has('mac')
+    let g:LanguageClient_loggingFile=expand("~/language-client.log")
+    let g:LanguageClient_loggingLevel="DEBUG"
+    let g:LanguageClient_serverCommands = {
+        \ 'dockerfile': ['docker-langserver', '--stdio'],
+        \ 'python': [expand('~/.pyenv/versions/pyls')],
+        \ 'go': [expand('~/Projects/go/bin/go-langserver'), '-gocodecompletion'],
+        \ }
+else
+    let g:LanguageClient_loggingFile=expand("~/tmp/language-client.log")
+    let g:LanguageClient_loggingLevel="DEBUG"
+    let g:LanguageClient_serverCommands = {
+        \ 'dockerfile': ['docker-langserver', '--stdio'],
+        \ 'python': [expand('~/.virtualenvs/pyls/bin/pyls')],
+        \ 'go': [expand('~/git/go/bin/go-langserver'), '-gocodecompletion'],
+        \ }
+endif
 let g:lightline = {
     \   'colorscheme': 'deus',
     \   'active': {
@@ -144,8 +159,19 @@ let g:syntastic_yaml_checkers = ['yamllint']
 let g:UltiSnipsListSnippets = "<C-l>"
 let g:UltiSnipsEditSplit = "vertical"
 let g:UltiSnipsRemoveSelectModeMappings = 0
-let g:UltiSnipsExpandTrigger = "<Plug>(ultisnips_expand_or_jump)"
+" let g:UltiSnipsExpandTrigger = "<Plug>(ultisnips_expand_or_jump)"
+let g:UltiSnipsExpandTrigger = "<C-e>"
 
+""""""""""""""""""
+"  Highlighting  "
+""""""""""""""""""
+
+augroup WhiteSpaceGroup
+    au!
+    highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
+    autocmd BufEnter,InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+    autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+augroup end
 
 """"""""""
 " Groups "
@@ -179,9 +205,12 @@ augroup LanguageGroup
 
     autocmd FileType gitcommit set tw=70
     autocmd FileType java setlocal omnifunc=javacomplete#Complete
-    autocmd FileType json set et ts=2 sw=2 omnifunc=jsoncomplete#CompletePacker
+    autocmd FileType json set et ts=2 sw=2 omnifunc=jsoncomplete#Complete
     autocmd FileType ruby :call <SID>RubyConfig()
+    autocmd FileType terraform :call <SID>terraformSetup()
     autocmd FileType yaml set et ts=2 sw=2
+    autocmd FileType provisioners.json set ft=packer.json
+    autocmd BufNewFile,BufRead provisioners.json set ft=packer.json
 augroup END
 
 augroup Snippets
@@ -199,6 +228,12 @@ augroup YAML
     au!
     autocmd BufReadPost *.eyaml setlocal ft=yaml | call <SID>yamlSetup()
     autocmd FileType yaml :call <SID>yamlSetup()
+    if executable('yamllint')
+        let g:neomake_yaml_yamllint_maker = {
+                    \ 'args': ['-f', 'parsable'],
+                    \ 'errorformat': '%E%f:%l:%c: [error] %m,%W%f:%l:%c: [warning] %m' }
+        let g:neomake_yaml_enabled_makers = ['yamllint']
+    endif
 augroup END
 
 """""""""""
@@ -223,9 +258,9 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " Snippet completion testing
 " inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
-" inoremap <expr> <CR>  pumvisible() ? "\<C-y>" : "\<CR>"
-" inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
-inoremap <silent> <expr> <CR> pumvisible() ? ncm2_ultisnips#expand_or("\<C-e>", 'n') : "\<CR>"
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <silent> <expr> <CR> pumvisible() ? ncm2_ultisnips#expand_or("\<C-e>") : "\<CR>"
 
 " Editor config
 nnoremap <leader>ac :vsplit ~/.ansible.cfg<CR>
@@ -245,6 +280,9 @@ map « :NERDTreeToggle<CR>
 
 " GitGutterToggle - <Alt-g>
 map © :GitGutterToggle<CR>
+nnoremap <leader>gb :Gblame<cr>
+nnoremap <leader>gs :Gstatus<cr>
+nnoremap <leader>gf :GFiles<cr>
 
 """""""""""""
 " Functions "
@@ -286,6 +324,14 @@ function! s:RubyConfig()
     let g:rubycomplete_classes_in_global = 1
     let g:rubycomplete_rails = 1
     compiler ruby
+endfunction
+
+function! s:terraformSetup()
+    setlocal foldmarker={,}
+    setlocal foldmethod=marker
+    setlocal foldlevel=0
+    setlocal foldlevelstart=0
+    setlocal foldenable
 endfunction
 
 function! s:yamlSetup()
