@@ -68,6 +68,7 @@ Plug 'itchyny/lightline.vim'
 Plug 'juliosueiras/vim-terraform-completion'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'lervag/vimtex'
 Plug 'ncm2/ncm2-ultisnips'
 Plug 'pearofducks/ansible-vim'
 Plug 'rizzatti/dash.vim'
@@ -186,6 +187,14 @@ augroup AutocompleteGroup
 augroup END
 
 " Language
+augroup ConsulTemplate
+    au!
+    autocmd BufReadPost *.ctmpl setlocal ft=consul-template
+    autocmd BufWritePost *.ctmpl silent make
+    autocmd QuickFixCmdPost [^l]* nested cwindow
+    autocmd QuickFixCmdPost    l* nested lwindow
+augroup end
+
 augroup Golang
     au!
     autocmd BufWritePost *.go GoImports
@@ -200,6 +209,7 @@ augroup end
 
 augroup LanguageGroup
     au!
+    autocmd FileType consul-template :call <SID>ConsulTemplate()
     autocmd FileType go :call GoMaps()
     autocmd FileType * :call LC_maps()
 
@@ -212,6 +222,20 @@ augroup LanguageGroup
     autocmd FileType provisioners.json set ft=packer.json
     autocmd BufNewFile,BufRead provisioners.json set ft=packer.json
 augroup END
+
+augroup ncm2
+    " this one is which you're most likely to use?
+    au!
+    autocmd Filetype latex,tex call ncm2#register_source({
+                \ 'name': 'vimtex',
+                \ 'priority': 8,
+                \ 'scope': ['tex'],
+                \ 'mark': 'tex',
+                \ 'word_pattern': '\w+',
+                \ 'complete_pattern': g:vimtex#re#ncm2,
+                \ 'on_complete': ['ncm2#on_complete#omni', 'vimtex#complete#omnifunc'],
+                \ })
+augroup end
 
 augroup Snippets
     au!
@@ -296,6 +320,20 @@ function! s:build_go_files()
   elseif l:file =~# '^\f\+\.go$'
     call go#cmd#Build(0)
   endif
+endfunction
+
+" Consul Template
+function! s:ConsulTemplate()
+    set et ts=2 sw=2
+    set makeprg=consul-template\ -dry\ -once\ -template\ %
+    " setlocal errorformat=%.%#\ [%t%*[A-Z]]\ %.%#\ %f:\ %[a-z]:\ template:\ :%l:%c:\ %m
+    setlocal errorformat=%.%#\ [%t%*[A-Z]]\ (%*[a-z])\ %f:\ %*[a-z]:\ %*[a-z]:\ :%l:%c:\ %m
+    setlocal errorformat+=%.%#\ [%t%*[A-Z]]\ (%*[a-z])\ %f:\ %*[a-z]:\ %*[a-z]:\ :%l:\ %m
+    " setlocal errorformat+=%.%#\ [%t%*[A-Z]]\ (cli)\ %m
+    " setlocal errorformat+=%.%#\ [%t%*[A-Z]]\ (runner)\ %m
+    " setlocal errorformat+=%.%#\ [%t%*[A-Z]]\ (view)\ %m
+    " set errorformat+="%.%*\[%t%*] (cli)\ %f:\ %tarse:\ template:\ :%l:\ %m"
+    " 2019/10/06 16:50:50.593703 [ERR] (cli) template.ctmpl: execute: template: :1:14: executing "" at <"">: undefined variable: $f
 endfunction
 
 " Go Development Mappings
