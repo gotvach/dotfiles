@@ -26,6 +26,7 @@ Useful with MacTeX
           "/usr/local/bin" ":"
           "/usr/local/texlive/2015/bin/universal-darwin/" ":"
           "/Library/TeX/texbin" ":"
+          (expand-file-name "~/.linuxbrew/bin") ":"
             (getenv "PATH")))
 
 #+END_SRC
@@ -36,12 +37,23 @@ Fix doc-view mode (maybe)
   (setq exec-path (append exec-path '("/usr/local/bin/")))
 #+END_SRC
 
+* Shell
+
+Set a shell...
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq shell-file-name "/usr/bin/zsh")
+#+END_SRC
+
 * UTF
 
 #+BEGIN_SRC emacs-lisp :tangle yes
 ;; Grant's Special config
 (set-terminal-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
 (set-keyboard-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 (prefer-coding-system 'utf-8)
 #+END_SRC
 
@@ -77,7 +89,8 @@ Theme the ~#+BEGIN_~ blocks
   ;; org-mode configuration
   (eval-after-load "org"
     '(progn
-       (setq org-directory "~/git/local/grant/notes/")
+       (setq org-directory "~/Documents/org/")
+       (setq org-agenda-directory "~/Documents/journal")
        (define-key org-mode-map (kbd "C-c a") 'org-agenda)
        (load "~/.emacs.d/org-todo.el")
        (load "~/.emacs.d/org-refile.el")
@@ -97,11 +110,11 @@ Theme the ~#+BEGIN_~ blocks
 
 #+BEGIN_SRC emacs-lisp :tangle yes
   (require 'ox-latex)
-  ;(add-to-list 'org-latex-packages-alist '("" "listings"))
-  ;(add-to-list 'org-latex-packages-alist '("" "color"))
+  (add-to-list 'org-latex-packages-alist '("" "listings") t)
+  (add-to-list 'org-latex-packages-alist '("" "color") t)
   ;(add-to-list 'org-latex-packages-alist '("" "minted"))
-  ; (setq org-latex-listings t)
-  ;(setq org-latex-listings 'listings)
+  ;(setq org-latex-listings t)
+  (setq org-latex-listings 'listings)
 #+END_SRC
 
 ** Enable Emacs Speaks Statistics
@@ -130,6 +143,22 @@ Theme the ~#+BEGIN_~ blocks
    )
 #+END_SRC
 
+** SRC block to listings
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (defun my-latex-export-example-blocks (text backend info)
+    "Export example blocks as listings env."
+    (when (org-export-derived-backend-p backend 'latex)
+      (with-temp-buffer
+        (insert text)
+        ;; replace verbatim env by listings
+        (goto-char (point-min))
+        (replace-string "\\begin{lstlisting}" "\\begin{commandline}")
+        (replace-string "\\end{lstlisting}" "\\end{commandline}")
+        (buffer-substring-no-properties (point-min) (point-max)))))
+
+  (add-to-list 'org-export-filter-example-block-functions
+               'my-latex-export-example-blocks)
+#+END_SRC
 ** Attribute headings
 
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -180,6 +209,60 @@ Try to assign some defaults to all minted block styling, specifically fontsize.
 ;           ))
 #+END_SRC
 
+** Beamer Config
+#+BEGIN_SRC emacs-lisp :tangle yes
+(require 'ox-latex)
+(add-to-list 'org-latex-classes
+             '("beamer"
+               "\\documentclass\[presentation\]\{beamer\}"
+               ("\\section\{%s\}" . "\\section*\{%s\}")
+               ("\\subsection\{%s\}" . "\\subsection*\{%s\}")
+               ("\\subsubsection\{%s\}" . "\\subsubsection*\{%s\}")))
+#+END_SRC
+** Journal
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-to-list 'org-agenda-files (expand-file-name "~/Documents/journal"))
+  ;;(org-journal-update-auto-mode-alist)
+  (customize-set-variable 'org-journal-date-format "%A, %d %B %Y")
+  (customize-set-variable 'org-journal-file-format "%Y%m%d.org")
+  ;;(customize-set-variable 'org-journal-file-type "daily")
+
+  (require 'org-journal)
+  (defun org-journal-file-header-func (time)
+    "Custom function to create journal header."
+    (concat
+     (pcase org-journal-file-type
+       (`daily "#+TITLE: Daily Journal\n#+STARTUP: showeverything")
+       (`weekly "#+TITLE: Weekly Journal\n#+STARTUP: folded")
+       (`monthly "#+TITLE: Monthly Journal\n#+STARTUP: folded")
+       (`yearly "#+TITLE: Yearly Journal\n#+STARTUP: folded")
+       )))
+
+  (setq org-journal-file-header 'org-journal-file-header-func)
+  ;;(setq org-journal-skip-carryover-drawers (list "LOGBOOK"))
+#+END_SRC
+
+*** Keybindings
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (add-hook 'org-mode-hook
+            (lambda() 
+              (local-set-key (kbd "<f5>") 'org-journal-new-entry)
+              (local-set-key (kbd "<f7>") 'org-clock-in)
+              (local-set-key (kbd "<f8>") 'org-clock-out)
+              )
+            )
+#+END_SRC
+
+#+RESULTS:
+| lambda | nil | (local-set-key (quote [F7]) (quote org-clock-in)) | (local-set-key (quote [F8]) (quote org-clock-out)) |
+
+** Redraw Display shortcut
+Sometimes the rendering breaks in Unity after resizing the Emacs
+window. Ctrl-L in vim is the normal way to refresh or redraw the
+screen. Therefore using the same shortcut here for Emacs.
+#+BEGIN_SRC emacs-lisp :tangle yes
+(global-set-key (kbd "C-l") 'redraw-display)
+#+END_SRC
 * Backup files
 
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -202,21 +285,21 @@ Try to assign some defaults to all minted block styling, specifically fontsize.
   ;(setq tex-start-options "-shell-escape")
   (setq tex-pdf-mode t)
 #+END_SRC
-
 * PDFLaTeX
 
+** Export to PDF
 Add ~-shell-escape~ to default pdflatex options. Enabled to allow pygmentize (external Python) to work.
 
 #+BEGIN_SRC emacs-lisp :tangle yes
   ;(setq org-pdf-latex-process '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-  ;(setq org-latex-pdf-process '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-  (setq org-latex-pdf-process '("texi2dvi --shell-escape -V --clean -p -b %f" "texi2dvi --shell-escape -V --clean -p -b %f" "texi2dvi --shell-escape -V --clean -p -b %f"))
+  (setq org-latex-pdf-process '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+  ;(setq org-latex-pdf-process '("texi2dvi --shell-escape -V --clean -p -b %f" "texi2dvi --shell-escape -V --clean -p -b %f" "texi2dvi --shell-escape -V --clean -p -b %f"))
 
   ;(setq org-latex-pdf-process
   ;     '("xelatex %f && bibtex %f && xelatex %f && xelatex %f")
 ;; ;; http://emacs.stackexchange.com/questions/5945/export-latex-pdf-and-loose-references-how-to-fix
-;; (setq org-latex-pdf-process
-;;        '("pdflatex -pdflatex='pdflatex -interaction nonstopmode'  -bibtex -f -pdf %f"))
+ ;(setq org-latex-pdf-process
+  ;      '("pdflatex -pdflatex='pdflatex -interaction nonstopmode'  -bibtex -f -pdf %f"))
 ;;        '("latexmk -pdf %f"))
 ;;       '("xelatex %f && bibtex %f && xelatex %f && xelatex %f")
 ;;       '("pdflatex -interaction nonstopmode %b"
@@ -230,6 +313,10 @@ Add ~-shell-escape~ to default pdflatex options. Enabled to allow pygmentize (ex
 ;;         "texi2dvi --pdf --clean --verbose --batch %f")
 #+END_SRC
 
+** Force new page after TOC
+#+BEGIN_SRC emacs-list :tangle yes
+(setq org-latex-toc-command "\\tableofcontents \\clearpage")
+#+END_SRC
 * Doc View
 ** Enable auto revert mode
 
@@ -303,6 +390,8 @@ Automatically refresh rendered documents when the source file is compiled
 (setq mac-command-modifier 'meta)
 #+END_SRC
 
+* Swap Meta/Super on Leopold
+(setq w32-alt-is-meta 'nil)
 * Tab settings
 
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -314,24 +403,26 @@ Automatically refresh rendered documents when the source file is compiled
 * Org Babel languages
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-;; Org babel setup - needs to be outside 'custom-set-variables' block to take effect.
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '(
-   ;; (R . t)
-   (C . t)
-   (ditaa . t)
-   (dot . t)
-   (java . t)
-   (perl . t)
-   (python . t)
-   (ruby . t)
-   (screen . t)
-   (shell . t)
-   ))
-
-(setq org-export-babel-evaluate nil)
+    ;; Org babel setup - needs to be outside 'custom-set-variables' block to take effect.
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '(
+       ;; (R . t)
+       (C . t)
+       (ditaa . t)
+       (dot . t)
+       (java . t)
+       (js . t)
+       (perl . t)
+       (python . t)
+       (ruby . t)
+       (screen . t)
+       (shell .t)
+       )) (setq org-export-babel-evaluate nil)
 #+END_SRC
+
+#+RESULTS:
+
 * Haskell
 
 ** Enable Haskell Indentation
@@ -355,7 +446,8 @@ Automatically refresh rendered documents when the source file is compiled
        (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
        (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
        (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)
-       (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)))
+       ;; (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)
+       ))
   (eval-after-load 'haskell-cabal
     '(progn
        (define-key haskell-cabal-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
@@ -419,4 +511,11 @@ Automatically refresh rendered documents when the source file is compiled
   (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
   (require 'flymake-puppet)
   (add-hook 'puppet-mode-hook (lambda () (flymake-puppet-load)))
+#+END_SRC
+* JIRA
+** Config
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (setq jiralib-url "https://jira")
+  (setq request-log-level 'debug)
+  (setq request-message-level 'debug)
 #+END_SRC
