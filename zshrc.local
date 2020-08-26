@@ -1,15 +1,20 @@
+#!/usr/bin/env bash
 tmux_send_keys_all_windows() {
     for win in $(tmux list-windows -F '#W'); do
         tmux send-keys -t $win "$@";
     done
 }
 
+DM=$(which docker-machine)
+
+if [ -x ${DM} ]; then
+    ${DM} status default 2>/dev/null | grep -q Running
+    if [ $? -eq 0 ]; then
+        eval $(docker-machine env --shell bash)
+        export CONSUL_HTTP_ADDR=${${DOCKER_HOST##tcp://}%%:2376}:8500
+    fi
+fi
+
 if [ -r $HOME/.zshrc.api ]; then
     . $HOME/.zshrc.api
 fi
-
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
-export LDFLAGS="-L/usr/local/opt/openssl/lib"
-export CPPFLAGS="-I/usr/local/opt/openssl/include"

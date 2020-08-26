@@ -20,6 +20,7 @@ set t_Co=256
 set tabstop=4 shiftwidth=4 expandtab
 set completeopt=noinsert,menuone,noselect,preview
 set complete+=k
+set spell spellfile="~/.spellfile" spelllang=en_gb
 
 """""""""""
 " Plugins "
@@ -38,7 +39,7 @@ if has('nvim')
 
     Plug 'neomake/neomake'
     Plug 'Shougo/neco-syntax'
-    Plug 'fgrsnau/ncm2-otherbuf', { 'branch': 'ncm2' }
+    Plug 'fgrsnau/ncm2-otherbuf', { 'branch': 'master' }
 
     " Display
     Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
@@ -65,10 +66,12 @@ Plug 'flazz/vim-colorschemes'
 Plug 'godlygeek/tabular'
 Plug 'honza/vim-snippets'
 Plug 'itchyny/lightline.vim'
+Plug 'joshdick/onedark.vim'
 Plug 'juliosueiras/vim-terraform-completion'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'lervag/vimtex'
+Plug 'mhinz/neovim-remote'
 Plug 'ncm2/ncm2-ultisnips'
 Plug 'pearofducks/ansible-vim'
 Plug 'rizzatti/dash.vim'
@@ -91,6 +94,7 @@ call plug#end()
 " colorscheme Light
 " colorscheme LightDefault
 " colorscheme monokai
+colorscheme onedark
 " colorscheme PaperColor
 " colorscheme revolution
 " colorscheme Tomorrow-Night
@@ -99,13 +103,26 @@ call plug#end()
 " colorscheme zen
 " colorscheme zenburn
 " colorscheme znake
-colorscheme molokai
+" colorscheme molokai
 
 
 """""""""""""
 " Variables "
 """""""""""""
 " See output of :checkhealth
+let g:pymode_python = 'python3'
+if has('mac')
+    let g:python_host_prog  = expand('~/.pyenv/versions/py2neovim/bin/python')
+    let g:python3_host_prog = expand('~/.pyenv/versions/py3neovim/bin/python')
+elseif has('linux')
+    let g:python_host_prog  = expand('~/.virtualenvs/py2neovim/bin/python')
+    let g:python3_host_prog = expand('~/.virtualenvs/py3neovim/bin/python')
+endif
+
+" has('linux') not currently working? 15/1/20
+let g:python_host_prog  = expand('/usr/bin/python2')
+let g:python3_host_prog = expand('~/.linuxbrew/bin/python3')
+
 
 if has('mac')
     let g:LanguageClient_loggingFile=expand("~/language-client.log")
@@ -134,15 +151,6 @@ let g:lightline = {
     \       'fugitive': 'fugitive#head'
     \   }
     \ }
-let g:pymode_python = 'python3'
-if has('mac')
-    let g:python_host_prog  = expand('~/.pyenv/versions/py2neovim/bin/python')
-    let g:python3_host_prog = expand('~/.pyenv/versions/py3neovim/bin/python')
-elseif has('linux')
-    let g:python_host_prog  = expand('~/.virtualenvs/py2neovim/bin/python')
-    let g:python3_host_prog = expand('~/.virtualenvs/py3neovim/bin/python')
-endif
-
 let g:ncm2#popup_delay = 100
 if !exists('g:necovim#complete_functions')
     let g:necovim#complete_functions = {}
@@ -162,6 +170,10 @@ let g:UltiSnipsEditSplit = "vertical"
 let g:UltiSnipsRemoveSelectModeMappings = 0
 " let g:UltiSnipsExpandTrigger = "<Plug>(ultisnips_expand_or_jump)"
 let g:UltiSnipsExpandTrigger = "<C-e>"
+let g:tex_flavor = 'latex'
+
+let g:vimtex_compiler_method = 'xelatex'
+let g:vimtex_compiler_progname = 'nvr'
 
 """"""""""""""""""
 "  Highlighting  "
@@ -184,7 +196,7 @@ augroup AutocompleteGroup
     autocmd CompleteDone * if pumvisible() == 0 | pclose | endif
     autocmd BufEnter * call ncm2#enable_for_buffer()
     autocmd TextChangedP * call ncm2#auto_trigger()
-augroup END
+augroup end
 
 " Language
 augroup ConsulTemplate
@@ -207,6 +219,11 @@ augroup Graphviz
     autocmd BufWritePost *.dot silent make
 augroup end
 
+augroup Jenkinsfile
+    au!
+    autocmd FileType Jenkinsfile set sw=2 ts=2
+augroup end
+
 augroup LanguageGroup
     au!
     autocmd FileType consul-template :call <SID>ConsulTemplate()
@@ -221,7 +238,7 @@ augroup LanguageGroup
     autocmd FileType yaml set et ts=2 sw=2
     autocmd FileType provisioners.json set ft=packer.json
     autocmd BufNewFile,BufRead provisioners.json set ft=packer.json
-augroup END
+augroup end
 
 augroup ncm2
     " this one is which you're most likely to use?
@@ -240,13 +257,13 @@ augroup end
 augroup Snippets
     au!
     autocmd FileType json :call UltiSnips#AddFiletypes('packer')
-augroup END
+augroup end
 
 augroup Vim
     au!
     autocmd BufWritePost init.vim* source %
     autocmd BufWrite .vimrc source %
-augroup END
+augroup end
 
 augroup YAML
     au!
@@ -258,7 +275,7 @@ augroup YAML
                     \ 'errorformat': '%E%f:%l:%c: [error] %m,%W%f:%l:%c: [warning] %m' }
         let g:neomake_yaml_enabled_makers = ['yamllint']
     endif
-augroup END
+augroup end
 
 """""""""""
 " Keymaps "
@@ -288,7 +305,7 @@ inoremap <silent> <expr> <CR> pumvisible() ? ncm2_ultisnips#expand_or("\<C-e>") 
 
 " Editor config
 nnoremap <leader>ac :vsplit ~/.ansible.cfg<CR>
-nnoremap <leader>ah :vsplit ~/git/hmpo/ghammond/scripts/ansible.hosts<CR>
+nnoremap <leader>ah :vsplit ~/.ansible/hosts<CR>
 nnoremap <leader>ev :vsplit ~/.config/nvim/init.vim<CR>
 nnoremap <leader>eg :vsplit ~/.gitconfig<CR>
 
@@ -378,6 +395,8 @@ function! s:yamlSetup()
     setlocal foldlevel=0
     setlocal foldlevelstart=0
     setlocal foldenable
+    setlocal cursorcolumn
+    setlocal cursorline
 endfunction
 
 """"""""""""""""""""""""""""""

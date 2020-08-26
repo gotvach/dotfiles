@@ -1,25 +1,34 @@
+set +x
+# zmodload zsh/zprof
+
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
+export TERM=gnome-256color
+
+set -o emacs
+bindkey "^[[1~" beginning-of-line
+bindkey "^[[4~" end-of-line
 
 # ZSH_THEME="tjkirch_mod"
 # ZSH_THEME="gnzh"
 # ZSH_THEME="pygmalion"
-# ZSH_THEME="muse"
-ZSH_THEME="kolo"
+ZSH_THEME="muse"
+# ZSH_THEME="kolo"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git docker docker-machine docker-compose kitchen aws kubectl minikube helm)
+plugins=(brew git docker docker-machine docker-compose kitchen aws kubectl minikube helm terraform pip)
 
 # User configuration
 POTION=~/git/remote/potion/bin
 
-export GOPATH=~/Projects/go
-export RUBY_VER=2.6.0
-export GEM_PATH=${HOME}/.gem/ruby/${RUBY_VER}
-export PATH="$HOME/bin:$HOME/.local/bin:/usr/texbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Library/Haskell/bin:$POTION:$GOPATH/bin:${GEM_PATH}/bin:${PATH}"
+export GOROOT=~/Software/go
+export GOPATH=~/git/go
+export RUBY_VER=2.7.0
+export GEM_PATH="$HOME/.gem/ruby/$RUBY_VER:$HOME/.linuxbrew/lib/ruby/gems/$RUBY_VER"
+export PATH="$HOME/.rbenv/shims:$HOME/.gem/ruby/$RUBY_VER/bin:$HOME/bin:$HOME/.linuxbrew/Cellar/tfenv/0.6.0/bin:$HOME/.linuxbrew/bin:$HOME/.linuxbrew/sbin:$HOME/.local/bin:/usr/texbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Library/Haskell/bin:$POTION:$GOPATH/bin:$GOROOT/bin:$PATH"
 
 source $ZSH/oh-my-zsh.sh
 if [ -r $HOME/.zshrc.local ]; then
@@ -29,14 +38,25 @@ fi
 # Pager for nicer work with Git logs
 export PAGER='less -R -X -e'
 
-if [ -x /usr/local/bin/docker-machine ]; then
-    if [ $(/usr/local/bin/docker-machine status default 2>/dev/null | grep -q -v 'Stopped') ]; then
-        eval $(/usr/local/bin/docker-machine env default)
-    else
-        # echo "docker-machine default is not running; not setting environment."
-    fi
-fi
-
 autoload -U promptinit
 promptinit
-export PATH="/usr/local/opt/ruby/bin:$PATH"
+
+awsls () {
+    aws ec2 describe-instances \
+        --query 'Reservations[*].Instances[*].[InstanceId,State.Name,InstanceType,PrivateIpAddress,PublicIpAddress,Tags[?Key==`Name`].Value[]]' \
+        --output json | \
+        tr -d '\n[] "' | \
+        perl -pe 's/i-/\ni-/g' | \
+        tr ',' '\t' | \
+        sed -e 's/null/None/g' | \
+        grep '^i-' | \
+        column -t \
+    }
+
+# zprof
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C $HOME/.linuxbrew/Cellar/tfenv/2.0.0/versions/0.12.26/terraform terraform
+
+xrdb -remove
+xrdb -merge ~/.Xdefaults
