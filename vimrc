@@ -1,62 +1,58 @@
 let $PATH = $PATH . ':' . expand("~/.cabal/bin")
+
 set rtp+=/Users/grant/homebrew/share/vim/vim74
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vundle plugin management
-filetype off                  " required
+let g:polyglot_disabled = [ 'haskell', 'ftdetect' ]
+
+"filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" " alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
-"
-" " let Vundle manage Vundle, required
-Bundle 'gmarik/Vundle.vim'
+set rtp+=~/.vim/autoload/plug.vim
+call plug#begin('~/.vim/plugged/')
 
-" Bundle "coot/atp_vim"
-" Bundle "myusuf3/numbers.vim"
-Bundle "MarcWeber/vim-addon-mw-utils"
-Bundle "Shougo/neocomplete.vim"
-Bundle "Shougo/vimproc.vim"
-Bundle "Twinside/vim-haskellConceal"
-Bundle "bronson/vim-trailing-whitespace"
-Bundle "ctrlpvim/ctrlp.vim"
-Bundle "davidhalter/jedi-vim"
-Bundle "eagletmt/ghcmod-vim"
-Bundle "eagletmt/neco-ghc"
-Bundle "fatih/vim-go"
-Bundle "flazz/vim-colorschemes"
-Bundle "garbas/vim-snipmate"
-Bundle "godlygeek/tabular"
-Bundle "honza/vim-snippets"
-Bundle "kmees/vim-specky"
-Bundle "lervag/vimtex"
-Bundle "lukerandall/haskellmode-vim"
-Bundle "rizzatti/dash.vim"
-Bundle "rodjek/vim-puppet"
-Bundle "scrooloose/syntastic"
-Bundle "sheerun/vim-polyglot"
-Bundle "szw/vim-tags"
-Bundle "terryma/vim-multiple-cursors"
-Bundle "tomtom/tlib_vim"
-Bundle "tpope/vim-commentary"
-Bundle "tpope/vim-obsession"
-Bundle "tpope/vim-fugitive"
-Bundle "tpope/vim-git"
-Bundle "tpope/vim-repeat"
-Bundle "tpope/vim-surround"
-Bundle "tpope/vim-unimpaired"
-Bundle "vim-airline/vim-airline"
-Bundle "vim-airline/vim-airline-themes"
-Bundle "vim-ruby/vim-ruby"
+Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'Shougo/vimproc.vim'
+Plug 'Twinside/vim-haskellConceal'
+Plug 'bronson/vim-trailing-whitespace'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'davidhalter/jedi-vim'
+Plug 'fatih/vim-go'
+Plug 'flazz/vim-colorschemes'
+Plug 'garbas/vim-snipmate'
+Plug 'godlygeek/tabular'
+Plug 'honza/vim-snippets'
+Plug 'kmees/vim-specky'
+Plug 'lervag/vimtex'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'mattn/vim-lsp-settings'
+Plug 'rizzatti/dash.vim'
+Plug 'rodjek/vim-puppet'
+Plug 'scrooloose/syntastic'
+Plug 'sheerun/vim-polyglot'
+Plug 'szw/vim-tags'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'tomtom/tlib_vim'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-git'
+Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-ruby/vim-ruby'
 
 " All of your Plugins must be added before the following line
-call vundle#end()            " required
+call plug#end()            " required
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 filetype on
 filetype plugin indent on    " required
+colorscheme molokai
 
 function! s:RepeatChar()
     echo "Char to insert = "
@@ -81,12 +77,6 @@ endfunction
 
 function! s:GoConfig()
     set et ts=4 sw=4
-    if !exists('g:neocomplete#force_omni_input_patterns')
-        let g:neocomplete#force_omni_input_patterns = {}
-    endif
-    let g:neocomplete#force_omni_input_patterns.go = '[^.[:digit:] *\t]\.'
-    let g:neocomplete#enable_auto_select = 1
-
     if isdirectory(expand("~/.vim/bundle/vim-go"))
         let g:go_fmt_fail_silently = 1
         let g:go_fmt_command = "gofmt"
@@ -134,6 +124,22 @@ function! s:RubyConfig()
     compiler ruby
 endfunction
 
+augroup Colors
+    autocmd!
+    autocmd ColorScheme * call ColorHighlights()
+augroup END
+
+function! ColorHighlights() abort
+    " highlight MyLspErrorText ctermfg=203 ctermbg=235 guifg=#E5786D guibg=#242424
+    highlight MyLspErrorText ctermfg=203 ctermbg=235 guifg=#E5786D
+    highlight LspErrorText term=standout ctermfg=darkred ctermbg=darkred guifg=#cc0000 guibg=#242424
+    " highlight link LspErrorVirtualText MyLspErrorText
+    highlight link LspErrorHighlight MyLspErrorText
+    highlight clear LspWarningLine
+    highlight lspReference ctermfg=red guifg=red ctermbg=green guibg=green
+    highlight lspReference guibg=#303010
+endfunction
+
 augroup Development
     au!
     au FileType gitcommit set tw=70
@@ -142,9 +148,6 @@ augroup Development
     au FileType yaml set et ts=2 sw=2
     au FileType json set et ts=2 sw=2 omnifunc=jsoncomplete#CompletePacker
 augroup END
-
-" Auto-checking on writing
-autocmd BufWritePost *.hs,*.lhs GhcModCheckAndLintAsync
 
 augroup Go
     au!
@@ -166,10 +169,58 @@ augroup Go
 augroup END
 
 augroup HaskellGroup
-"  neocomplcache (advanced completion)
     au!
-    autocmd BufEnter *.hs,*.lhs let g:neocomplcache_enable_at_startup = 1
     autocmd BufEnter *.hs,*.lhs :call SetToCabalBuild()
+
+    if executable('haskell-language-server-wrapper')
+        au User lsp_setup call lsp#register_server({
+        \ 'name': 'haskell',
+        \ 'cmd': {server_info->['haskell-language-server-wrapper', '--lsp']},
+        \ 'allowlist': ['haskell'],
+        \ })
+    endif
+augroup END
+
+" Original source: https://dev.to/moniquelive/haskell-lsp-bonus-for-vim-4nlj
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=yes
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gf <plug>(lsp-code-action)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> gt <plug>(lsp-type-definition)
+    nmap <buffer> <F2> <plug>(lsp-rename)
+    nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+    xmap <buffer> f <plug>(lsp-document-range-format)
+    nmap <buffer> <F5> <plug>(lsp-code-lens)
+
+    " buffer format on save
+    " autocmd BufWritePre <buffer> LspDocumentFormatSync
+endfunction
+
+" Original source: https://dev.to/moniquelive/haskell-lsp-bonus-for-vim-4nlj
+augroup LspInstall
+    au!
+    let g:lsp_signs_enabled = 1         " enable signs
+    let g:lsp_diagnostics_highlights_enabled = 1
+    let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
+    let g:lsp_diagnostics_signs_error = {'text': '✗'}
+    " let g:lsp_signs_warning = {'text': '‼', 'icon': '/path/to/some/icon'} " icons require GUI
+    " let g:lsp_signs_hint = {'icon': '/path/to/some/other/icon'} " icons require GUI
+    let g:lsp_diagnostics_signs_warning = {'text': '‼'}
+    let g:lsp_highlight_references_enabled = 1
+
+    " highlight link LspErrorText GruvboxRedSign " requires gruvbox
+
+    " Need to override colorscheme prior to loading LSP
+    " highlight LspErrorText guifg=red guibg=red
+    " highlight link LspErrorVirtualText ErrorMsg
+    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
 augroup PythonGroup
@@ -195,21 +246,26 @@ set pastetoggle=<F3>
 let mapleader = ','
 let localleader = ','
 set number relativenumber
+set termguicolors
 
-colorscheme molokai
 "set rulerformat='%-14.(%l,%c%V%)\ %P'
 "set statusline=%<\ %n:%f\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
 set laststatus=2
 set omnifunc=syntaxcomplete#Complete
-set completeopt=preview,menu
-" let g:airline_powerline_fonts = 1
+" set completeopt=preview,menu
+set completeopt=menu
 set statusline+=%{fugitive#statusline()}
 set statusline+=%{ObsessionStatus()}
-let g:airline_theme = "wombat"
-let g:airline#extensions#branch#enabled=1
+
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
+let g:airline_powerline_fonts = 0
+let g:airline_theme = "wombat"
+let g:airline#extensions#branch#enabled=1
+" let g:airline_left_sep = ''
+let g:airline_left_sep = ''
+let g:airline_symbols.branch = ''
 
 let g:rubycomplete_load_gemfile = 1
 let g:rubycomplete_buffer_loading = 1
@@ -223,27 +279,19 @@ let g:syntastic_mode_map={'mode': 'active', 'passive_filetypes': ['haskell']}
 
 " Autocompletion
 let g:jedi#popup_select_first = 0
-let g:haskellmode_completion_ghc = 1
+let g:haskellmode_completion_ghc = 0
 let g:acp_enableAtStartup = 0
-let g:neocomplete#enable_at_startup = 1
-let g:neocomplete#enable_smart_case = 1
-let g:neocomplete#sources#syntax#min_keyword_length = 3
-let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
 
-inoremap <expr><C-g>     neocomplete#undo_completion()
-"inoremap <expr><C-l>     neocomplete#complete_common_string()
+if isdirectory('~/.vim/plugged/asyncomplete')
+    inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    " inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+    inoremap <expr> <cr> pumvisible() ? asyncomplete#close_popup() . "\<cr>" : "\<cr>"
+    imap <c-space> <Plug>(asyncomplete_force_refresh)
 
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-function! s:my_cr_function()
-  return pumvisible() ? neocomplete#close_popup() : "\<CR>"
-endfunction
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y>  neocomplete#close_popup()
-inoremap <expr><C-e>  neocomplete#cancel_popup()
+    " Default
+    " let g:asyncomplete_auto_popup = 0
+endif
 
 let g:necoghc_enable_detailed_browse = 0
 set tags=tags;/,codex.tags;/
@@ -252,33 +300,6 @@ set csto=1 " search codex tags first
 set cst
 set csverb
 nnoremap <silent> <C-\> :cs find c <C-R>=expand("<cword>")<CR><CR>
-" nnoremap <leader>g :silent execute "grep! -R " . shellescape(expand("<cWORD>")) . " ."<cr>:copen<cr>
-
-" Autocomplete already-existing words in the file with tab (extremely useful!)
-" function! InsertTabWrapper()
-"       let col = col('.') - 1
-"       if !col || getline('.')[col - 1] !~ '\k'
-"           return "\<tab>"
-"       else
-"           return "\<c-p>"
-"       endif
-" endfunction
-" inoremap <tab> <c-r>=InsertTabWrapper()<cr>
-
-" Define keyword.
-if !exists('g:neocomplete#keyword_patterns')
-    let g:neocomplete#keyword_patterns = {}
-endif
-if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns = {}
-endif
-if !exists('g:neocomplete#force_omni_input_patterns')
-    let g:neocomplete#force_omni_input_patterns = {}
-endif
-let g:neocomplete#keyword_patterns['default'] = '\h\w*'
-let g:neocomplete#sources#omni#input_patterns.ruby = '[^.[:digit:] *\t]\%(\.\|->\)'
-
-" inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 
 map <silent> <Leader>d <Plug>DashSearch
 nmap <Leader>$$ :%s/.* \([^ ]*\)/\1/<CR>
@@ -352,40 +373,12 @@ if isdirectory(expand("~/.vim/bundle/vim-fugitive"))
 endif
 " }
 
-" " Neocompletion {
-if isdirectory(expand("~/.vim/bundle/neocomplete"))
-    let g:neocomplete#enable_at_startup = 1
-    " inoremap <expr><C-g> neocomplete#undo_completion()
-    " inoremap <expr><C-l> neocomplete#complete_common_string()
-
-    " if !exists('g:neocomplete#sources#omni#input_patterns')
-    "     let g:neocomplete#sources#omni#input_patterns = {}
-    " endif
-    " let g:neocomplete#enable_refresh_always = 0
-    " let g:neocomplete#enable_auto_close_preview = 1
-    " let g:neocomplete#enable_smart_case = 0
-    " call neocomplete#custom#source('_', 'sorters', [])
-    " let g:neocomplete#sources#dictionary#dictionaries = {
-    "             \ 'default' : '',
-    "             \ 'vimshell' : $HOME.'/.vimshell_hist'
-    "             \ }
-endif
-" " }
-
 hi Pmenu ctermbg=8
 hi PmenuSel ctermbg=1
 hi PmenuSbar ctermbg=0
 
 " inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<C-g>u\<Tab>"
 " inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" neocomplete
-if isdirectory(expand("~/.vim/bundle/neocomplete.vim"))
-    let g:neocomplete#enable_at_startup = 1
-    " Set minimum syntax keyword length.
-    " let g:neocomplete#sources#syntax#min_keyword_length = 3
-    inoremap <expr><C-g> neocomplete#undo_completion()
-endif
 
 " Handy stuff
 " inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
@@ -394,3 +387,5 @@ set wildmenu
 set wildmode=longest:full,full
 
 set secure
+
+abbreviate :branch: 
