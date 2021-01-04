@@ -17,14 +17,15 @@ Plug 'Shougo/vimproc.vim'
 Plug 'Twinside/vim-haskellConceal'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'davidhalter/jedi-vim'
 Plug 'fatih/vim-go'
 Plug 'flazz/vim-colorschemes'
 Plug 'garbas/vim-snipmate'
 Plug 'godlygeek/tabular'
 Plug 'honza/vim-snippets'
+Plug 'junegunn/fzf'
 Plug 'kmees/vim-specky'
 Plug 'lervag/vimtex'
+Plug 'liuchengxu/vista.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
@@ -77,7 +78,7 @@ endfunction
 
 function! s:GoConfig()
     set et ts=4 sw=4
-    if isdirectory(expand("~/.vim/bundle/vim-go"))
+    if isdirectory(expand("~/.vim/plugged/vim-go"))
         let g:go_fmt_fail_silently = 1
         let g:go_fmt_command = "gofmt"
         let g:go_highlight_functions = 1
@@ -129,6 +130,7 @@ augroup Colors
     autocmd ColorScheme * call ColorHighlights()
 augroup END
 
+" 
 function! ColorHighlights() abort
     " highlight MyLspErrorText ctermfg=203 ctermbg=235 guifg=#E5786D guibg=#242424
     highlight MyLspErrorText ctermfg=203 ctermbg=235 guifg=#E5786D
@@ -260,12 +262,9 @@ set statusline+=%{ObsessionStatus()}
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
-let g:airline_powerline_fonts = 0
+let g:airline_powerline_fonts = 1
 let g:airline_theme = "wombat"
 let g:airline#extensions#branch#enabled=1
-" let g:airline_left_sep = ''
-let g:airline_left_sep = ''
-let g:airline_symbols.branch = ''
 
 let g:rubycomplete_load_gemfile = 1
 let g:rubycomplete_buffer_loading = 1
@@ -276,30 +275,30 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_mode_map={'mode': 'active', 'passive_filetypes': ['haskell']}
+let g:vista_sidebar_width = 50
+let g:vista_default_executive = 'vim_lsp'
 
 " Autocompletion
 let g:jedi#popup_select_first = 0
 let g:haskellmode_completion_ghc = 0
 let g:acp_enableAtStartup = 0
 
-if isdirectory('~/.vim/plugged/asyncomplete')
+if isdirectory(expand('~/.vim/plugged/asyncomplete.vim'))
     inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-    " inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
-    inoremap <expr> <cr> pumvisible() ? asyncomplete#close_popup() . "\<cr>" : "\<cr>"
+    inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+    " inoremap <expr> <cr> pumvisible() ? asyncomplete#close_popup() . "\<cr>" : "\<cr>"
     imap <c-space> <Plug>(asyncomplete_force_refresh)
 
     " Default
     " let g:asyncomplete_auto_popup = 0
 endif
 
-let g:necoghc_enable_detailed_browse = 0
 set tags=tags;/,codex.tags;/
 map <leader>tg :!codex update --force<CR>
 set csto=1 " search codex tags first
 set cst
 set csverb
-nnoremap <silent> <C-\> :cs find c <C-R>=expand("<cword>")<CR><CR>
 
 map <silent> <Leader>d <Plug>DashSearch
 nmap <Leader>$$ :%s/.* \([^ ]*\)/\1/<CR>
@@ -309,6 +308,7 @@ nnoremap <Leader>tc :tabclose<CR>
 nnoremap <Leader>tn :tabnew<CR>
 nnoremap <Leader>ev :vsplit $MYVIMRC<cr>
 nnoremap <Leader>o :only<cr>
+nnoremap <Leader>c :close<cr>
 nnoremap <F7> mzgg=G<CR>
 nnoremap <F8> }mz{='z<CR>
 inoremap jk <esc>
@@ -316,6 +316,7 @@ cnoremap <c-g> <esc>
 nnoremap ; :
 nnoremap <Leader>h :help <c-r>=expand('<cword>')<cr><cr>
 nnoremap <Leader>H :help <c-r>=expand('<cWORD>')<cr><cr>
+nnoremap <silent> <C-\> :Vista!!<CR>
 " nnoremap <silent> cc :<c-r>=<SID>RepeatChar()<cr>
 
 " Reformat and align puppet resource blocks
@@ -323,7 +324,7 @@ nnoremap <Leader>H :help <c-r>=expand('<cWORD>')<cr><cr>
 " nnoremap == /=><cr>viB=j,a=>}
 
 " Tabularize {
-if isdirectory(expand("~/.vim/bundle/tabular"))
+if isdirectory(expand("~/.vim/plugged/tabular"))
     nmap <Leader>a& :Tabularize /&<CR>
     vmap <Leader>a& :Tabularize /&<CR>
     nmap <Leader>a- :Tabularize /-<CR>
@@ -353,7 +354,7 @@ endif
 
 " imap <tab> <Plug>snipMateNextOrTrigger
 " Vim Tags {
-if isdirectory(expand("~/.vim/bundle/vim-tags"))
+if isdirectory(expand("~/.vim/plugged/vim-tags"))
     let g:vim_tags_auto_generate = 1
     let g:vim_tags_ctags_binary = "/usr/bin/ctags"
     " let g:vim_tags_project_tags_command = "{CTAGS} {OPTIONS} {DIRECTORY} 2>/dev/null"
@@ -363,7 +364,7 @@ if isdirectory(expand("~/.vim/bundle/vim-tags"))
 endif
 
 " Fugitive {
-if isdirectory(expand("~/.vim/bundle/vim-fugitive"))
+if isdirectory(expand("~/.vim/plugged/vim-fugitive"))
     noremap <Leader>gs :Gstatus<CR>
     noremap <Leader>gc :Gcommit<CR>
     noremap <Leader>gb :Gbrowse<CR>
