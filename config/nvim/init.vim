@@ -1,4 +1,4 @@
-set runtimepath^=~/.neovim runtimepath+=~/.neovim/after
+set runtimepath^=~/.local/share/nvim/plugged runtimepath+=~/.local/share/nvim/plugged/after
 let &packpath = &runtimepath
 
 """""""""""
@@ -28,8 +28,8 @@ iabbrev _date_ <C-r>=strftime("%A, %d %B %Y %H:%M %Z")<cr>
 " Plugins "
 """""""""""
 
-" call plug#begin('~/.local/share/nvim/plugged')
-call plug#begin('~/.neovim/plugged')
+call plug#begin('~/.local/share/nvim/plugged')
+" call plug#begin('~/.neovim/plugged')
 if has('nvim')
     " Completion
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -136,8 +136,8 @@ let g:lightline = {
     \   }
     \ }
 let g:pymode_python = 'python3'
-let g:python_host_prog  = '/Users/grant/.pyenv/versions/py2neovim/bin/python'
-let g:python3_host_prog = '/Users/grant/.pyenv/versions/py3neovim/bin/python'
+let g:python_host_prog  = '/usr/bin/python'
+let g:python3_host_prog = '/usr/bin/python3'
 
 if !exists('g:necovim#complete_functions')
     let g:necovim#complete_functions = {}
@@ -156,6 +156,8 @@ let g:UltiSnipsExpandTrigger = "<C-e>"
 let g:UltiSnipsListSnippets = "<C-l>"
 let g:UltiSnipsEditSplit = "vertical"
 let g:UltiSnipsListSnippets = "<C-tab>"
+
+let g:tex_flavor = 'latex'
 
 """"""""""
 " Groups "

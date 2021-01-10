@@ -25,7 +25,7 @@ plugins=(brew git docker docker-machine docker-compose kitchen aws kubectl minik
 POTION=~/git/remote/potion/bin
 
 export GOROOT=~/Software/go
-export GOPATH=~/git/go
+export GOPATH=~/Projects/go
 export RUBY_VER=2.7.0
 export GEM_PATH="$HOME/.gem/ruby/$RUBY_VER:$HOME/.linuxbrew/lib/ruby/gems/$RUBY_VER"
 export PATH="$HOME/.rbenv/shims:$HOME/.gem/ruby/$RUBY_VER/bin:$HOME/bin:$HOME/.linuxbrew/Cellar/tfenv/0.6.0/bin:$HOME/.linuxbrew/bin:$HOME/.linuxbrew/sbin:$HOME/.local/bin:/usr/texbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Library/Haskell/bin:$POTION:$GOPATH/bin:$GOROOT/bin:$PATH"

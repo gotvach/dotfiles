@@ -1,5 +1,6 @@
 " vim:set et sw=4 ts=4 tw=78 ft=vim:
 " set runtimepath^=~/.neovim runtimepath+=~/.neovim/after
+set runtimepath^=~/.local/share/nvim/plugged runtimepath+=~/.local/share/nvim/plugged/after
 let &packpath = &runtimepath
 
 """""""""""
@@ -21,6 +22,8 @@ set tabstop=4 shiftwidth=4 expandtab
 set completeopt=noinsert,menuone,noselect,preview
 set complete+=k
 set spell spellfile="~/.spellfile" spelllang=en_gb
+set hidden
+set secure
 
 """""""""""
 " Plugins "
@@ -151,6 +154,16 @@ let g:lightline = {
     \       'fugitive': 'fugitive#head'
     \   }
     \ }
+
+let g:pymode_python = 'python3'
+if has('mac')
+    let g:python_host_prog  = expand('~/.pyenv/versions/py2neovim/bin/python')
+    let g:python3_host_prog = expand('~/.pyenv/versions/py3neovim/bin/python')
+elseif has('linux')
+    let g:python_host_prog  = '/usr/bin/python'
+    let g:python3_host_prog = '/usr/bin/python3'
+endif
+
 let g:ncm2#popup_delay = 100
 if !exists('g:necovim#complete_functions')
     let g:necovim#complete_functions = {}
@@ -175,6 +188,8 @@ let g:tex_flavor = 'latex'
 let g:vimtex_compiler_method = 'xelatex'
 let g:vimtex_compiler_progname = 'nvr'
 
+let g:tex_flavor = 'latex'
+
 """"""""""""""""""
 "  Highlighting  "
 """"""""""""""""""
@@ -194,7 +209,7 @@ augroup end
 augroup AutocompleteGroup
     au!
     autocmd CompleteDone * if pumvisible() == 0 | pclose | endif
-    autocmd BufEnter * call ncm2#enable_for_buffer()
+    " autocmd BufEnter * call ncm2#enable_for_buffer()
     autocmd TextChangedP * call ncm2#auto_trigger()
 augroup end
 

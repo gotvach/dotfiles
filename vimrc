@@ -1,6 +1,5 @@
 let $PATH = $PATH . ':' . expand("~/.cabal/bin")
-
-set rtp+=/Users/grant/homebrew/share/vim/vim74
+" set rtp+=/Users/grant/homebrew/share/vim/vim74
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vundle plugin management
@@ -10,9 +9,10 @@ let g:polyglot_disabled = [ 'haskell', 'ftdetect' ]
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/autoload/plug.vim
-call plug#begin('~/.vim/plugged/')
 
+call plug#begin('~/.vim/plugged')
 Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'Shougo/neocomplete.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'Twinside/vim-haskellConceal'
 Plug 'bronson/vim-trailing-whitespace'
@@ -277,6 +277,8 @@ let g:syntastic_check_on_wq = 0
 let g:syntastic_mode_map={'mode': 'active', 'passive_filetypes': ['haskell']}
 let g:vista_sidebar_width = 50
 let g:vista_default_executive = 'vim_lsp'
+
+let g:tex_flavor = 'latex'
 
 " Autocompletion
 let g:jedi#popup_select_first = 0

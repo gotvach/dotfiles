@@ -509,8 +509,8 @@ Automatically refresh rendered documents when the source file is compiled
   ; Start puppet-mode when editing a .pp file
   (autoload 'puppet-mode "puppet-mode" "Major mode for editing puppet manifests")
   (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
-  (require 'flymake-puppet)
-  (add-hook 'puppet-mode-hook (lambda () (flymake-puppet-load)))
+  ;(require 'flymake-puppet)
+  ;(add-hook 'puppet-mode-hook (lambda () (flymake-puppet-load)))
 #+END_SRC
 * JIRA
 ** Config
