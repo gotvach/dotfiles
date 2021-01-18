@@ -125,6 +125,16 @@ function! s:GoConfig()
     compiler go
 endfunction
 
+function! s:JenkinsfileConfig()
+    " silent execute "!" "curl -X POST localhost:8080/pipeline-model-converter/validate -F \"jenkinsfile=<" . bufname("%") . "\""
+    set makeprg=curl\ -s\ -X\ POST\ localhost:8080/pipeline-model-converter/validate\ -F\ \"jenkinsfile=<Jenkinsfile\"\ 2>&1\ /dev/null
+    set ts=2 sw=2 et
+endfunction
+
+function! s:JenkinsfileValidate()
+    make!
+endfunction
+
 function! s:RubyConfig()
     set et ts=2 sw=2
     set omnifunc=rubycomplete#Complete
@@ -136,6 +146,7 @@ endfunction
 
 augroup Development
     au!
+    au FileType Jenkinsfile :call <SID>JenkinsfileConfig()
     au FileType gitcommit set tw=70
     au FileType ruby :call <SID>RubyConfig()
     " au BufReadPost,BufNewFile *_spec.rb set syntax=rspec
@@ -144,7 +155,10 @@ augroup Development
 augroup END
 
 " Auto-checking on writing
-autocmd BufWritePost *.hs,*.lhs GhcModCheckAndLintAsync
+augroup Jenkins
+    au!
+    au BufWritePost Jenkinsfile :call <SID>JenkinsfileValidate()
+augroup END
 
 augroup Go
     au!
@@ -170,6 +184,7 @@ augroup HaskellGroup
     au!
     autocmd BufEnter *.hs,*.lhs let g:neocomplcache_enable_at_startup = 1
     autocmd BufEnter *.hs,*.lhs :call SetToCabalBuild()
+    autocmd BufWritePost *.hs,*.lhs GhcModCheckAndLintAsync
 augroup END
 
 augroup PythonGroup

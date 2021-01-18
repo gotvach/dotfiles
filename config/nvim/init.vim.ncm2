@@ -21,6 +21,7 @@ set tabstop=4 shiftwidth=4 expandtab
 set completeopt=noinsert,menuone,noselect,preview
 set complete+=k
 set spell spellfile="~/.spellfile" spelllang=en_gb
+set rtp+=/usr/local/opt/fzf
 
 """""""""""
 " Plugins "
@@ -157,6 +158,7 @@ if !exists('g:necovim#complete_functions')
 endif
 let g:necovim#complete_functions.Ref = 'ref#complete'
 
+let g:tex_flavor = 'latex'
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
@@ -173,6 +175,8 @@ let g:UltiSnipsExpandTrigger = "<C-e>"
 let g:tex_flavor = 'latex'
 
 let g:vimtex_compiler_method = 'xelatex'
+let g:vimtex_compiler_progname = 'nvr'
+
 let g:vimtex_compiler_progname = 'nvr'
 
 """"""""""""""""""

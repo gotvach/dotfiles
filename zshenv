@@ -70,6 +70,7 @@ alias gdp='git diff production..'
 alias gdps='gdp --stat'
 alias gdm='git diff master..'
 alias gdms='gdm --stat'
+alias gpap='git pap'
 
 # alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
 alias open=xdg-open
@@ -112,3 +113,4 @@ function scale-up-ds {
 }
 
 alias pod-per-node='kubectl get pod -o=custom-columns=NODE:.spec.nodeName,NAME:.metadata.name'
+alias abe='java -jar ~/git/remote/android-backup-extractor/build/libs/abe-all.jar'

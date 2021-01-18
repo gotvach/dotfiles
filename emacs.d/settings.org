@@ -403,22 +403,24 @@ Automatically refresh rendered documents when the source file is compiled
 * Org Babel languages
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-    ;; Org babel setup - needs to be outside 'custom-set-variables' block to take effect.
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '(
-       ;; (R . t)
-       (C . t)
-       (ditaa . t)
-       (dot . t)
-       (java . t)
-       (js . t)
-       (perl . t)
-       (python . t)
-       (ruby . t)
-       (screen . t)
-       (shell .t)
-       )) (setq org-export-babel-evaluate nil)
+;; Org babel setup - needs to be outside 'custom-set-variables' block to take effect.
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '(
+   ;; (R . t)
+   (C . t)
+   (ditaa . t)
+   (dot . t)
+   (java . t)
+   (latex . t)
+   (perl . t)
+   (python . t)
+   (ruby . t)
+   (screen . t)
+   (shell . t)
+   ))
+
+(setq org-export-babel-evaluate nil)
 #+END_SRC
 
 #+RESULTS:

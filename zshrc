@@ -24,11 +24,11 @@ plugins=(brew git docker docker-machine docker-compose kitchen aws kubectl minik
 # User configuration
 POTION=~/git/remote/potion/bin
 
-export GOROOT=~/Software/go
-export GOPATH=~/git/go
-export RUBY_VER=2.7.0
-export GEM_PATH="$HOME/.gem/ruby/$RUBY_VER:$HOME/.linuxbrew/lib/ruby/gems/$RUBY_VER"
-export PATH="$HOME/.rbenv/shims:$HOME/.gem/ruby/$RUBY_VER/bin:$HOME/bin:$HOME/.linuxbrew/Cellar/tfenv/0.6.0/bin:$HOME/.linuxbrew/bin:$HOME/.linuxbrew/sbin:$HOME/.local/bin:/usr/texbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Library/Haskell/bin:$POTION:$GOPATH/bin:$GOROOT/bin:$PATH"
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+export GOPATH=~/Projects/go
+export RUBY_VER=2.6.0
+export GEM_PATH=${HOME}/.gem/ruby/${RUBY_VER}
+export PATH="$HOME/bin:$HOME/.local/bin:/usr/texbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Library/Haskell/bin:$POTION:$GOPATH/bin:${GEM_PATH}/bin:${PATH}"
 
 source $ZSH/oh-my-zsh.sh
 if [ -r $HOME/.zshrc.local ]; then
