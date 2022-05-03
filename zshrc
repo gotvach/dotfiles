@@ -3,7 +3,7 @@ set +x
 
 # Path to your oh-my-zsh installation.
 export ZSH=~/.oh-my-zsh
-export TERM=gnome-256color
+export TERM=xterm-256color
 
 set -o emacs
 bindkey "^[[1~" beginning-of-line
@@ -59,4 +59,4 @@ autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C $HOME/.linuxbrew/Cellar/tfenv/2.0.0/versions/0.12.26/terraform terraform
 
 xrdb -remove
-xrdb -merge ~/.Xdefaults
+[ -f ~/.Xdefaults ] && xrdb -merge ~/.Xdefaults

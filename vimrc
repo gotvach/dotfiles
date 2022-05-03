@@ -33,6 +33,7 @@ Plug 'mattn/vim-lsp-settings'
 Plug 'rizzatti/dash.vim'
 Plug 'rodjek/vim-puppet'
 Plug 'scrooloose/syntastic'
+Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'szw/vim-tags'
 Plug 'terryma/vim-multiple-cursors'
@@ -142,6 +143,18 @@ function! ColorHighlights() abort
     highlight lspReference guibg=#303010
 endfunction
 
+augroup Ansible
+    au!
+    au BufRead,BufNewFile *.yml,*.yaml :setlocal ft=yaml.ansible
+    if executable('ansible-language-server-wrapper')
+        au User lsp_setup call lsp#register_server({
+        \ 'name': 'ansible-language-server',
+        \ 'cmd': {server_info->['ansible-language-server']},
+        \ 'allowlist': ['ansible'],
+        \ })
+    endif
+augroup END
+
 augroup Development
     au!
     au FileType gitcommit set tw=70
@@ -237,6 +250,8 @@ augroup VimGroup
     au BufWritePost $MYVIMRC :source %
 augroup END
 
+" checktime useful to refresh Vista window when NERDTree opens a new buffer.
+checktime
 set modelines=5
 syntax on
 set tw=76
@@ -270,6 +285,7 @@ let g:rubycomplete_load_gemfile = 1
 let g:rubycomplete_buffer_loading = 1
 let g:haddock_browser = "/Applications/Firefox"
 let g:puppet_align_hashes = 0       " conflicts with snipMate puppet snippets
+let g:snipMate = { 'snippet_version' : 1 }
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
@@ -318,7 +334,10 @@ cnoremap <c-g> <esc>
 nnoremap ; :
 nnoremap <Leader>h :help <c-r>=expand('<cword>')<cr><cr>
 nnoremap <Leader>H :help <c-r>=expand('<cWORD>')<cr><cr>
-nnoremap <silent> <C-\> :Vista!!<CR>
+nnoremap <Leader>d :!ansible-doc <c-r>=expand('<cword>')<cr><cr>
+" This is actually <C-/>
+nnoremap <silent> <> :Vista!!<CR>
+nnoremap <silent> <C-\> :NERDTreeToggle<CR>
 " nnoremap <silent> cc :<c-r>=<SID>RepeatChar()<cr>
 
 " Reformat and align puppet resource blocks

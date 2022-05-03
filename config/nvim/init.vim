@@ -121,7 +121,7 @@ let g:deoplete#sources._ = ['ultisnips','LanguageClient']
 " let g:LanguageClient_loggingLevel="INFO"
 let g:LanguageClient_serverCommands = {
     \ 'dockerfile': ['docker-langserver', '--stdio'],
-    \ 'python': ['/Users/grant/.pyenv/versions/pyls'],
+    \ 'python': ['~/.linxbrew/bin/pyls'],
     \ 'go': ['/Users/grant/Projects/go/bin/go-langserver', '-gocodecompletion'],
     \ 'groovy': [''],
     \ }
@@ -136,8 +136,8 @@ let g:lightline = {
     \   }
     \ }
 let g:pymode_python = 'python3'
-let g:python_host_prog  = '/usr/bin/python'
-let g:python3_host_prog = '/usr/bin/python3'
+let g:python_host_prog  = '/usr/bin/python2'
+let g:python3_host_prog = '/usr/bin/python'
 
 if !exists('g:necovim#complete_functions')
     let g:necovim#complete_functions = {}

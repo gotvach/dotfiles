@@ -27,7 +27,7 @@ export NPM_PACKAGES="${HOME}/.local/share/npm-packages"
 export PATH="${PATH}:${NPM_PACKAGES}/bin:${HOME}/.npm/"
 export MANPATH="${MANPATH}:${NPM_PACKAGES}/share/man"
 
-PROXY=${PROXY:-proxy:3128}
+# PROXY=${PROXY:-proxy:3128}
 NOPROXY="192.168.0.0/16,127.0.0.0/8,localhost"
 
 alias proxy="export HTTP_PROXY=$PROXY; export HTTPS_PROXY=$PROXY; export http_proxy=$PROXY; export https_proxy=$PROXY export NO_PROXY=$NOPROXY"
@@ -103,12 +103,12 @@ function eyaml {
 # helper to pass parameters to ansible when needing password sudo for -b
 alias become='ansible -b -e @~/.gnupg/ansible-sudo.yml --ask-vault-pass'
 
-function scale-down-ds {
-    kubectl -n monitoring patch daemonset ${@} -p '{"spec": {"template": {"spec": {"nodeSelector": {"non-existing": "true"}}}}}'
-}
+# function scale-down-ds {
+#     kubectl -n monitoring patch daemonset ${@} -p '{"spec": {"template": {"spec": {"nodeSelector": {"non-existing": "true"}}}}}'
+# }
 
-function scale-up-ds {
-    kubectl -n monitoring patch daemonset ${@} --type json -p='[{"op": "remove", "path": "/spec/template/spec/nodeSelector/non-existing"}]'
-}
+# function scale-up-ds {
+#     kubectl -n monitoring patch daemonset ${@} --type json -p='[{"op": "remove", "path": "/spec/template/spec/nodeSelector/non-existing"}]'
+# }
 
-alias pod-per-node='kubectl get pod -o=custom-columns=NODE:.spec.nodeName,NAME:.metadata.name'
+# alias pod-per-node='kubectl get pod -o=custom-columns=NODE:.spec.nodeName,NAME:.metadata.name'
