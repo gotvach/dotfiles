@@ -16,7 +16,8 @@ export PYTHONSTARTUP=~/.pythonrc
 export TERM=gnome-256color
 export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig:${HOME}/.linuxbrew/bin/
 export AWS_PROFILE=hiti
-export DOCKER_TLS_VERIFY=true
+# ~/.docker/ca.pem isn't a thing here on Linux
+export DOCKER_TLS_VERIFY=false
 
 # https://bbs.archlinux.org/viewtopic.php?id=176987
 # Fix/workaround for flickering, locks and missing menus etc for Libreoffice
@@ -59,7 +60,7 @@ alias gpa='git pull --all'
 alias gpap='git pull --all --prune'
 alias gb='git branch'
 alias gba='git branch --all'
-alias gc='git checkout master'
+alias gc='git checkout main'
 alias ggr='git grep'
 alias gh='git hamster || git co ghammond'
 alias gp='git pp'
@@ -68,7 +69,7 @@ alias gla='git lga'
 alias gl='git lg'
 alias gdp='git diff production..'
 alias gdps='gdp --stat'
-alias gdm='git diff master..'
+alias gdm='git diff main..'
 alias gdms='gdm --stat'
 
 # alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs

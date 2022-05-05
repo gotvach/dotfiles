@@ -189,7 +189,7 @@ Clock changes and task state changes get logged to ~:LOGBOOK:~ by default.
                 str (concat str "--")))
         (concat str "-> "))))
 
-  (advice-add 'org-clocktable-indent-string :override #'my-org-clocktable-indent-string)
+  ;;(advice-add 'org-clocktable-indent-string :override #'my-org-clocktable-indent-string)
 #+END_SRC
 
 ** Minted

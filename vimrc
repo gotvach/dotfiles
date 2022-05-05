@@ -264,6 +264,8 @@ let mapleader = ','
 let localleader = ','
 set number relativenumber
 set termguicolors
+set spell spelllang=en_gb
+set spellfile="dictionary.txt"
 
 "set rulerformat='%-14.(%l,%c%V%)\ %P'
 "set statusline=%<\ %n:%f\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
@@ -386,12 +388,12 @@ endif
 
 " Fugitive {
 if isdirectory(expand("~/.vim/plugged/vim-fugitive"))
-    noremap <Leader>gs :Gstatus<CR>
-    noremap <Leader>gc :Gcommit<CR>
-    noremap <Leader>gb :Gbrowse<CR>
+    noremap <Leader>gs :Git<CR>
+    noremap <Leader>gc :Git commit<CR>
+    noremap <Leader>gb :GBrowse<CR>
     noremap <Leader>gw :Gwrite<CR>
     noremap <Leader>gr :Gread<CR>
-    noremap <Leader>gB :Gblame<CR>
+    noremap <Leader>gB :Git blame<CR>
 endif
 " }
 

@@ -58,7 +58,7 @@
       nil)
      ("N" "NEXT in queue"
       ((todo "NEXT" nil))
-      nil nil))))
+      nil nil)))
  '(org-agenda-files nil)
  '(org-confirm-babel-evaluate nil)
  '(package-enable-at-startup nil)
@@ -149,7 +149,7 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 
-(package-initialize)
+;;(package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
 (dolist (package package-list)
