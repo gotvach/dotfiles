@@ -56,7 +56,11 @@ awsls () {
 # zprof
 
 autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C $HOME/.linuxbrew/Cellar/tfenv/2.0.0/versions/0.12.26/terraform terraform
+if [ -x tfenv ]; then
+    TFENV_VER=$(tfenv --version | awk '{print $2;}')
+    TF_VER=$(tfenv version-name)
+    complete -o nospace -C $HOME/.linuxbrew/Cellar/tfenv/${TFENV_VER}/versions/${TF_VER}/terraform terraform
+fi
 
 xrdb -remove
 [ -f ~/.Xdefaults ] && xrdb -merge ~/.Xdefaults
