@@ -15,7 +15,6 @@ export EDITOR=nvim
 export PYTHONSTARTUP=~/.pythonrc
 export TERM=gnome-256color
 export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig:${HOME}/.linuxbrew/bin/
-export AWS_PROFILE=hiti
 # ~/.docker/ca.pem isn't a thing here on Linux
 export DOCKER_TLS_VERIFY=false
 
@@ -35,6 +34,7 @@ alias proxy="export HTTP_PROXY=$PROXY; export HTTPS_PROXY=$PROXY; export http_pr
 alias noproxy="unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy NO_PROXY"
 
 alias boxes='boxes -d shell -pv1'
+alias tgrep='grep --exclude-dir=.terraform'
 
 # Use docker image to provide a java runtime
 alias jdk='docker run --rm -v $PWD:/tmp -w /tmp openjdk:8'
@@ -62,7 +62,6 @@ alias gb='git branch'
 alias gba='git branch --all'
 alias gc='git checkout main'
 alias ggr='git grep'
-alias gh='git hamster || git co ghammond'
 alias gp='git pp'
 alias gr='git rebm'
 alias gla='git lga'
