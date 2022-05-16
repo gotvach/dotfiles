@@ -95,7 +95,7 @@ Theme the ~#+BEGIN_~ blocks
        (load "~/.emacs.d/org-todo.el")
        (load "~/.emacs.d/org-refile.el")
        (load "~/.emacs.d/org-capture.el")))
-
+  (require 'org-tempo)
 #+END_SRC
 
 ** Useability
@@ -129,8 +129,8 @@ Theme the ~#+BEGIN_~ blocks
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-to-list
    'org-structure-template-alist
-   '("et" "#+BEGIN_SRC emacs-lisp :tangle yes\n?\n#+END_SRC" "<src lang=\"?\">\n\n</src>")
-   )
+   '("el" . "src emacs-lisp :tangle yes")
+  )
 #+END_SRC
 
 ** SRC block for LaTeX
@@ -138,9 +138,9 @@ Theme the ~#+BEGIN_~ blocks
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-to-list
    'org-structure-template-alist
-   '("lh" "#+LaTeX_HEADER: ?" "<literal style=\"latex\">?</latex>")
-   '("lc" "#+LaTeX_CLASS: ?" "<literal style=\"latex\">?</latex>")
-   )
+   '("lh" . "latex_header")
+   '("lc" . "latex_class")
+  )
 #+END_SRC
 
 ** SRC block to listings
@@ -164,8 +164,8 @@ Theme the ~#+BEGIN_~ blocks
 #+BEGIN_SRC emacs-lisp :tangle yes
   (add-to-list
    'org-structure-template-alist
-   '("al" "#+ATTR_LaTeX: ?" "")
-   '("ah" "#+ATTR_HTML: ?" "")
+   '("al" . "attr_latex")
+   '("ah" . "attr_html")
    )
 #+END_SRC
 
