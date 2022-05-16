@@ -75,8 +75,9 @@ alias gdms='gdm --stat'
 # alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
 alias open=xdg-open
 
-# Linux Brew
+# Linux Brew - gcc requires a big tmp space so use a large volume...
 export HOMEBREW_PREFIX="$HOME/.linuxbrew"
+export HOMEBREW_TEMP="/var/lib/rancher/gcc"
 export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
 export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
 
