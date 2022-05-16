@@ -115,8 +115,10 @@ endif
 " See output of :checkhealth
 
 let g:deoplete#enable_at_startup = 1
-let g:deoplete#sources = {}
-let g:deoplete#sources._ = ['ultisnips','LanguageClient']
+call deoplete#custom#option('sources', {
+    \'_': ['ultisnips', 'LanguageClient']
+    \})
+" let g:deoplete#sources._ = ['ultisnips','LanguageClient']
 " let g:LanguageClient_loggingFile="/Users/grant/language-client.log"
 " let g:LanguageClient_loggingLevel="INFO"
 let g:LanguageClient_serverCommands = {
@@ -124,6 +126,7 @@ let g:LanguageClient_serverCommands = {
     \ 'python': ['~/.linxbrew/bin/pyls'],
     \ 'go': ['/Users/grant/Projects/go/bin/go-langserver', '-gocodecompletion'],
     \ 'groovy': [''],
+    \ 'terraform': ['s/go/bin/go-langserver', '-gocodecompletion'],
     \ }
 let g:lightline = {
     \   'colorscheme': 'deus',
@@ -132,7 +135,7 @@ let g:lightline = {
     \                 [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
     \   },
     \   'component_function': {
-    \       'fugitive': 'fugitive#head'
+    \       'fugitive': 'Fugitive#Head'
     \   }
     \ }
 let g:pymode_python = 'python3'
@@ -212,6 +215,10 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
 " Editor config
 nnoremap <leader>ev :vsplit ~/.config/nvim/init.vim<CR>
 nnoremap <leader>eg :vsplit ~/.gitconfig<CR>
+
+" Editor general
+nnoremap <leader>c :close<CR>
+nnoremap <leader>o :only<CR>
 
 " FZF
 nnoremap <C-p> :Files<CR>
