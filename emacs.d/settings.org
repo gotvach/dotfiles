@@ -371,6 +371,13 @@ Automatically refresh rendered documents when the source file is compiled
 (global-set-key (kbd "C-=") 'er/expand-region)
 (global-set-key (kbd "C--") 'er/contract-region)
 #+END_SRC
+* Useful Shortcuts
+** Increase / decrease text size
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; Modify text size to help with switching resolutions and/or monitors.
+(global-set-key (kbd "C-}") 'text-scale-increase)
+(global-set-key (kbd "C-{") 'text-scale-decrease)
+#+END_SRC
 
 * Multiple Cursors
 
