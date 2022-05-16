@@ -12,8 +12,8 @@ bindkey "^[[4~" end-of-line
 # ZSH_THEME="tjkirch_mod"
 # ZSH_THEME="gnzh"
 # ZSH_THEME="pygmalion"
-ZSH_THEME="muse"
-# ZSH_THEME="kolo"
+# ZSH_THEME="muse"
+ZSH_THEME="kolo"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
