@@ -19,15 +19,15 @@ ZSH_THEME="muse"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(brew git docker docker-machine docker-compose kitchen aws kubectl minikube helm terraform pip)
+plugins=(brew git docker docker-compose gh kitchen aws kubectl helm terraform pip)
 
 # User configuration
 POTION=~/git/remote/potion/bin
 
 export GOROOT=~/Software/go
 export GOPATH=~/Projects/go
-export RUBY_VER=2.7.0
-export GEM_PATH="$HOME/.gem/ruby/$RUBY_VER:$HOME/.linuxbrew/lib/ruby/gems/$RUBY_VER"
+export RUBY_VER=$(/usr/bin/env ruby -e 'puts(RUBY_VERSION)')
+# export GEM_PATH="$HOME/.gem/ruby/$RUBY_VER:$HOME/.linuxbrew/lib/ruby/gems/$RUBY_VER"
 export PATH="$HOME/.rbenv/shims:$HOME/.gem/ruby/$RUBY_VER/bin:$HOME/bin:$HOME/.linuxbrew/Cellar/tfenv/0.6.0/bin:$HOME/.linuxbrew/bin:$HOME/.linuxbrew/sbin:$HOME/.local/bin:/usr/texbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Library/Haskell/bin:$POTION:$GOPATH/bin:$GOROOT/bin:$PATH"
 
 source $ZSH/oh-my-zsh.sh
@@ -42,8 +42,10 @@ autoload -U promptinit
 promptinit
 
 awsls () {
+    NAME=$1
     aws ec2 describe-instances \
-        --query 'Reservations[*].Instances[*].[InstanceId,State.Name,InstanceType,PrivateIpAddress,PublicIpAddress,Tags[?Key==`Name`].Value[]]' \
+        --filters "Name=tag:Name,Values=\"*$NAME*\"" \
+        --query 'Reservations[*].Instances[*].[InstanceId,State.Name,InstanceType,PrivateIpAddress,PublicIpAddress,Tags[?Key==`Name`] |[0].Value] | [] | sort_by(@, &[5])' \
         --output json | \
         tr -d '\n[] "' | \
         perl -pe 's/i-/\ni-/g' | \
