@@ -15,6 +15,7 @@ Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'Shougo/neocomplete.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'Twinside/vim-haskellConceal'
+Plug 'airblade/vim-gitgutter'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'fatih/vim-go'
@@ -30,6 +31,7 @@ Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'mattn/vim-lsp-settings'
+Plug 'rafi/awesome-vim-colorschemes'
 Plug 'rizzatti/dash.vim'
 Plug 'rodjek/vim-puppet'
 Plug 'scrooloose/syntastic'
@@ -43,6 +45,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-git'
 Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'vim-airline/vim-airline'
@@ -54,8 +57,6 @@ call plug#end()            " required
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 filetype on
 filetype plugin indent on    " required
-colorscheme molokai
-
 function! s:RepeatChar()
     echo "Char to insert = "
     let l:char = nr2char(getchar())
@@ -129,6 +130,8 @@ endfunction
 augroup Colors
     autocmd!
     autocmd ColorScheme * call ColorHighlights()
+    " autocmd ColorScheme * highlight Normal guibg=#141414 ctermbg=Black cterm=none
+    " autocmd ColorScheme * highlight NonText guibg=#141414 ctermbg=Black cterm=none
 augroup END
 
 " 
@@ -141,6 +144,18 @@ function! ColorHighlights() abort
     highlight clear LspWarningLine
     highlight lspReference ctermfg=red guifg=red ctermbg=green guibg=green
     highlight lspReference guibg=#303010
+    highlight Normal guibg=#141414 ctermbg=Black
+    highlight NonText guibg=#141414 ctermbg=Black
+
+    " The following to 'fix' popup menu fg & bg in onehalfdark. Black on white is nasty.
+    highlight Pmenu ctermfg=231 ctermbg=8 guibg=#242424 guifg=#dcdfe4
+    highlight PmenuSel ctermfg=231 ctermbg=8 guibg=#435277 guifg=#dcdfe4
+    highlight LineNr ctermfg=231 ctermbg=8 guibg=#202020 guifg=#aaaaaa
+    highlight CursorLineNr ctermfg=231 ctermbg=8 guibg=#202020 guifg=#aaaaaa
+    highlight GitGutterAdd guibg=#141414
+    highlight GitGutterDelete guibg=#141414
+    highlight GitGutterChange guibg=#141414
+    highlight GitGutterChangeDelete guibg=#141414
 endfunction
 
 augroup Ansible
@@ -195,6 +210,10 @@ augroup HaskellGroup
         \ })
     endif
 augroup END
+augroup Terraform
+    au!
+    au BufRead,BufNewFile *.tf,*.tfvars :setlocal ft=terraform
+augroup END
 
 " Original source: https://dev.to/moniquelive/haskell-lsp-bonus-for-vim-4nlj
 function! s:on_lsp_buffer_enabled() abort
@@ -220,6 +239,7 @@ endfunction
 " Original source: https://dev.to/moniquelive/haskell-lsp-bonus-for-vim-4nlj
 augroup LspInstall
     au!
+    let g:lsp_log_file = expand('~/vim-lsp.log')
     let g:lsp_signs_enabled = 1         " enable signs
     let g:lsp_diagnostics_highlights_enabled = 1
     let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
@@ -248,6 +268,8 @@ augroup END
 augroup VimGroup
     au!
     au BufWritePost $MYVIMRC :source %
+    " Re-apply theme customisations after writing the vimrc config file.
+    au BufWritePost $MYVIMRC :call ColorHighlights()
 augroup END
 
 " checktime useful to refresh Vista window when NERDTree opens a new buffer.
@@ -258,6 +280,8 @@ set tw=76
 set et
 set sw=4
 set ts=4
+set t_Co=256
+set mouse=a
 abbreviate £ #
 set pastetoggle=<F3>
 let mapleader = ','
@@ -275,6 +299,16 @@ set omnifunc=syntaxcomplete#Complete
 set completeopt=menu
 set statusline+=%{fugitive#statusline()}
 set statusline+=%{ObsessionStatus()}
+
+set background=dark
+" colorscheme default
+" colorscheme molokai
+" colorscheme last256
+" colorscheme badwolf
+" colorscheme darkburn
+" colorscheme tigrana-256-dark
+" colorscheme mod8
+colorscheme onehalfdark
 
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
@@ -339,7 +373,9 @@ nnoremap <Leader>H :help <c-r>=expand('<cWORD>')<cr><cr>
 nnoremap <Leader>d :!ansible-doc <c-r>=expand('<cword>')<cr><cr>
 " This is actually <C-/>
 nnoremap <silent> <> :Vista!!<CR>
-nnoremap <silent> <C-\> :NERDTreeToggle<CR>
+nnoremap <silent> \| :Vista!!<CR>
+nnoremap <silent> \ :NERDTreeToggle<CR>
+nnoremap <silent> g :GitGutterToggle<CR>
 " nnoremap <silent> cc :<c-r>=<SID>RepeatChar()<cr>
 
 " Reformat and align puppet resource blocks
@@ -390,10 +426,10 @@ endif
 if isdirectory(expand("~/.vim/plugged/vim-fugitive"))
     noremap <Leader>gs :Git<CR>
     noremap <Leader>gc :Git commit<CR>
-    noremap <Leader>gb :GBrowse<CR>
+    noremap <Leader>gB :GBrowse<CR>
     noremap <Leader>gw :Gwrite<CR>
     noremap <Leader>gr :Gread<CR>
-    noremap <Leader>gB :Git blame<CR>
+    noremap <Leader>gb :Git blame<CR>
 endif
 " }
 
