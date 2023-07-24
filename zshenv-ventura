@@ -1,0 +1,120 @@
+# Read every time
+# For non-interactive shells too (e.g. scripts)
+
+# https://vi.stackexchange.com/questions/7644/use-vim-with-virtualenv/7654#7654
+if [[ -n $VIRTUAL_ENV && -e "${VIRTUAL_ENV}/bin/activate" ]]; then
+  source "${VIRTUAL_ENV}/bin/activate"
+fi
+
+# Home / End key fix in tmux and elsewhere (?)
+# bindkey '\e[4~' end-of-line
+# bindkey '\e[1~' beginning-of-line
+if [ -x aws-vault ]; then
+    export AWS_VAULT_PASS_PASSWORD_STORE_DIR="${HOME}/.password-store/aws-vault/"
+    export AWS_VAULT_BACKEND=pass
+fi
+
+
+export FZF_DEFAULT_COMMAND="fd -E '.*/Library/.*' . $HOME"
+export FZF_ALT_C_COMMAND="fd -E '.*/Library/.*' -t d . $HOME"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+#export FZF_DEFAULT_OPTS='--height=40% --preview="file {} | grep -Eq \"text|JSON\" && cat {}" --preview-window=right:40%:wrap'
+
+#export VAGRANT_DEFAULT_PROVIDER=virtualbox
+export EDITOR=vim
+export PYTHONSTARTUP=~/.pythonrc
+export NPM_PACKAGES="${HOME}/.local/share/npm-packages"
+export MANPATH="${MANPATH}:${NPM_PACKAGES}/share/man"
+
+PROXY=${PROXY:-proxy:3128}
+NOPROXY="192.168.0.0/16,127.0.0.0/8,localhost"
+
+# Helper to reload zsh after updating environment files
+alias reload_zsh="exec zsh --login"
+
+# HMPO CHDP proxy management
+alias proxy="export HTTP_PROXY=$PROXY; export HTTPS_PROXY=$PROXY; export http_proxy=$PROXY; export https_proxy=$PROXY export NO_PROXY=$NOPROXY"
+alias noproxy="unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy NO_PROXY"
+
+alias boxes='boxes -d shell -pv1'
+alias tgrep='grep --exclude-dir=.terraform'
+
+# Ansible
+alias become='ansible -b -e @~/.gnupg/ansible-sudo.yml --ask-vault-pass'
+alias kansible='ansible -i ~/.ansible/k8s-cluster-hosts.ini'
+# alias ansible='ansible -c ~/.config/ansible/ansible.cfg'
+
+# Vault - interesting/useful keys
+alias grafana-hmpo-np-rds-passwd='vault read -field=hmpo secret/np-ho-pla-ew2tlg1nl1-i-pla-mgtt/secret/rds/rds-grafana-data/db_password_departments'
+
+# Vagrant aliases
+alias vgpr='vagrant provision'
+alias vgs='vagrant ssh'
+alias vgst='vagrant status'
+alias vgsu='vagrant suspend'
+alias vgd='vagrant destroy'
+alias vgdf='vagrant destroy -f'
+alias vgu='vagrant up'
+alias vgup='vagrant up'
+alias vg='vagrant'
+
+# General
+alias inventory-tags="cat ~/.ansible/aws-inventory-list.txt | jq -r '.all.children | (sort)'"
+alias bssh="ssh -F ~/.ssh/config.breakglass"
+alias rssh='function _ssh_reset(){ ssh-keygen -R $1; ssh $@};_ssh_reset'
+alias vtl='vault token lookup'
+alias td='terraform-docker'
+
+alias get-paloalto-pass='vault read -field=admin_password secret/np-ho-hmpo-prp1-i-pla-bc/HMPO/PaloAlto | pbcopy'
+
+# Git shell aliases
+alias gpa='git pull --all'
+alias gpap='git pull --all --prune --autostash'
+alias gb='git branch'
+alias gba='git branch --all'
+alias gc='git checkout $(git rev-parse --abbrev-ref origin/HEAD | cut -d"/" -f2)'
+alias ggr='git grep'
+alias gp='git pp'
+alias gr='git rebm'
+alias gla='git lga'
+alias gl='git lg'
+alias gdp='git diff production..'
+alias gdps='gdp --stat'
+alias gdm='git diff $(git rev-parse --abbrev-ref origin/HEAD)..'
+alias gdms='gdm --stat'
+
+# Kubernetes
+alias krsds='kubectl rollout status daemonset'
+
+# Mac local updatedb
+export LOCATE_DB="${HOME}/.cache/locate.db"
+alias locate="locate -d ${LOCATE_DB}"
+alias updatedb="SEARCHPATHS=$HOME FCODES=${LOCATE_DB} /usr/libexec/locate.updatedb"
+
+# alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+alias plantuml='java -jar /usr/share/plantuml/plantuml.jar'
+
+# Terraform
+alias plan='tf plan -lock=false'
+
+# Virtualenv
+export WORKON_HOME=$HOME/.virtualenvs
+export PROJECT_HOME=$HOME/Project
+#export VIRTUALENVWRAPPER_PYTHON=$HOMEBREW_PREFIX/bin/python3
+#export VIRTUALENVWRAPPER_VIRTUALENV=$HOMEBREW_PREFIX/bin/virtualenv
+#export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+#export VIRTUALENVWRAPPER_TMPDIR=$HOMEBREW_PREFIX/tmp
+# if [ -r $HOMEBREW_PREFIX/bin/virtualenvwrapper.sh ]; then
+#     source $HOMEBREW_PREFIX/bin/virtualenvwrapper.sh
+# fi
+
+export PASSWORD_STORE_CLIP_TIME=1200
+export AWS_SHARED_CREDENTIALS_FILE=~/.aws/shared_aws_np
+
+# GPG fix for signing git commits:
+#   "gpg: signing failed: Inappropriate ioctl for device"
+#export GPG_TTY=$(tty)
+
+# complete -o default __start_kubectl -F tbj-logs
+# complete -o default __start_kubectl -F legacy-jenkins-logs
