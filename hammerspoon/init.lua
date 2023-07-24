@@ -47,18 +47,18 @@ end)
 --  local win = hs.window.focusedWindow()
 -- end)
 
-hs.hotkey.bind(mash, "S", function()
-  hs.application.launchOrFocus("Safari")
-  local win = hs.window.focusedWindow()
-  if win then
-    -- win:maximize()
-  end
-end)
+--hs.hotkey.bind(mash, "S", function()
+--  hs.application.launchOrFocus("Safari")
+--  local win = hs.window.focusedWindow()
+--  if win then
+--    -- win:maximize()
+--  end
+--end)
 
-hs.hotkey.bind(mash, "D", function()
-  hs.application.launchOrFocus("Dash")
-  local win = hs.window.focusedWindow()
- end)
+-- hs.hotkey.bind(mash, "D", function()
+--  hs.application.launchOrFocus("Dash")
+-- local win = hs.window.focusedWindow()
+-- end)
 
 hs.hotkey.bind(mash, "Z", function()
   hs.application.launchOrFocus("iTerm")
@@ -191,7 +191,7 @@ function mouseHighlight()
         end
     end
     -- Get the current co-ordinates of the mouse pointer
-    mousepoint = hs.mouse.get()
+    mousepoint = hs.mouse.absolutePosition()
     -- Prepare a big red circle around the mouse pointer
     mouseCircle = hs.drawing.circle(hs.geometry.rect(mousepoint.x-40, mousepoint.y-40, 80, 80))
     mouseCircle:setStrokeColor({["red"]=1,["blue"]=0,["green"]=0,["alpha"]=1})
@@ -203,3 +203,28 @@ function mouseHighlight()
     mouseCircleTimer = hs.timer.doAfter(3, function() mouseCircle:delete() end)
 end
 hs.hotkey.bind({"cmd","alt","shift"}, "D", mouseHighlight)
+
+---
+--- Spoons Configs
+---
+
+local SkyRocket = hs.loadSpoon("SkyRocket")
+
+sky = SkyRocket:new({
+  -- Opacity of resize canvas
+  opacity = 0.3,
+
+  -- Which modifiers to hold to move a window?
+  -- moveModifiers = {'cmd', 'shift'},
+  moveModifiers = {'cmd', 'shift'},
+
+  -- Which mouse button to hold to move a window?
+  moveMouseButton = 'left',
+
+  -- Which modifiers to hold to resize a window?
+  -- resizeModifiers = {'ctrl', 'shift'},
+  resizeModifiers = {'cmd', 'shift'},
+
+  -- Which mouse button to hold to resize a window?
+  resizeMouseButton = 'right',
+})
