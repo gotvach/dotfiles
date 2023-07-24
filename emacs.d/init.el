@@ -169,3 +169,13 @@
 (global-set-key (kbd "M-x") 'smex)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
+
+;; Auto Org mode links?
+(defun org-insert-link-with-region (x y)
+  (interactive "r")
+  (org-insert-link nil ("https://jira/" . x) (buffer-substring-no-properties x y)))
+
+(setq org-link-abbrev-alist
+      '(
+        ("jira" . "https://jira/browse/")
+        ))
