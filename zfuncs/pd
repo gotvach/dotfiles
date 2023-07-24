@@ -1,0 +1,5 @@
+#
+# [ -r /opt/homebrew/share/zsh/site-functions/_pd ] && source /opt/homebrew/share/zsh/site-functions/_pd
+
+source /Users/grant/Library/Caches/pagerduty-cli/autocomplete/functions/zsh
+/Users/grant/node_modules/.bin/pd "$@"

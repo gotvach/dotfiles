@@ -1,0 +1,5 @@
+amils () {
+    NAME=$1
+    aws ec2 describe-images --owners aws-marketplace self --filters "Name=name,Values=\"*${NAME}*\"" --query 'Images[].[CreationDate,ImageId,Name] | sort_by(@,&[0])' --output text
+
+}
