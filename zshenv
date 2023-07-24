@@ -6,6 +6,10 @@ fi
 # Home / End key fix in tmux and elsewhere (?)
 # bindkey '\e[4~' end-of-line
 # bindkey '\e[1~' beginning-of-line
+if [ -x aws-vault ]; then
+    export AWS_VAULT_PASS_PASSWORD_STORE_DIR="${HOME}/.password-store/aws-vault/"
+    export AWS_VAULT_BACKEND=pass
+fi
 
 # Bug in v18.09 that breaks publishing ports. Therefore any new
 # docker-machines will use this image that does work.
@@ -16,7 +20,7 @@ export PYTHONSTARTUP=~/.pythonrc
 export TERM=gnome-256color
 export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig:${HOME}/.linuxbrew/bin/
 # ~/.docker/ca.pem isn't a thing here on Linux
-export DOCKER_TLS_VERIFY=false
+unset DOCKER_TLS_VERIFY
 
 # https://bbs.archlinux.org/viewtopic.php?id=176987
 # Fix/workaround for flickering, locks and missing menus etc for Libreoffice
@@ -73,6 +77,10 @@ alias gdms='gdm --stat'
 
 # alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
 alias open=xdg-open
+alias plantuml='java -jar /usr/share/plantuml/plantuml.jar'
+
+# Terraform
+alias plan='tf plan -lock=false'
 
 # Linux Brew - gcc requires a big tmp space so use a large volume...
 export HOMEBREW_PREFIX="$HOME/.linuxbrew"
