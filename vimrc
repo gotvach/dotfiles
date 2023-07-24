@@ -9,8 +9,10 @@ let g:polyglot_disabled = [ 'haskell', 'ftdetect' ]
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/autoload/plug.vim
+set rtp+=/opt/homebrew/opt/fzf
 
 call plug#begin('~/.vim/plugged')
+" Plug 'MarcWeber/vim-addon-manager'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'Shougo/neocomplete.vim'
 Plug 'Shougo/vimproc.vim'
@@ -22,21 +24,26 @@ Plug 'fatih/vim-go'
 Plug 'flazz/vim-colorschemes'
 Plug 'garbas/vim-snipmate'
 Plug 'godlygeek/tabular'
-Plug 'honza/vim-snippets'
+" Plug 'honza/vim-snippets'
+" Plug 'vim-syntastic/syntastic'   " for vim-terraform-completion
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'junegunn/fzf'
 Plug 'kmees/vim-specky'
-Plug 'lervag/vimtex'
+" Plug 'lervag/vimtex'
 Plug 'liuchengxu/vista.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'mattn/vim-lsp-settings'
 Plug 'rafi/awesome-vim-colorschemes'
+Plug 'sainnhe/sonokai'
 Plug 'rizzatti/dash.vim'
 Plug 'rodjek/vim-puppet'
-Plug 'scrooloose/syntastic'
+" Plug 'scrooloose/syntastic'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
+" Plug 'sirver/ultisnips'
 Plug 'szw/vim-tags'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tomtom/tlib_vim'
@@ -127,6 +134,38 @@ function! s:RubyConfig()
     compiler ruby
 endfunction
 
+if isdirectory(expand('~/.vim/plugged/vim-vsnip'))
+"     imap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+"     smap <expr> <C-j>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+
+"     " Expand or jump
+    imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+    smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+
+"     " Jump forward or backward
+    imap <expr> <Tab>   pumvisible() ? '<C-n>' : vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+    smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+    imap <expr> <S-Tab> pumvisible() ? '<C-p>' : vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+    smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+
+"     " Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
+"     " See https://github.com/hrsh7th/vim-vsnip/pull/50
+"     nmap        s   <Plug>(vsnip-select-text)
+"     xmap        s   <Plug>(vsnip-select-text)
+"     nmap        S   <Plug>(vsnip-cut-text)
+"     xmap        S   <Plug>(vsnip-cut-text)
+endif
+
+if isdirectory(expand('~/.vim/plugged/asyncomplete.vim'))
+    let g:asyncomplete_auto_completeopt = 1
+    let g:asyncomplete_auto_popup = 1
+    " imap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+    " imap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<Tab>"
+    imap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : '<cr>'
+    imap <expr> <C-g>   pumvisible() ? asyncomplete#cancel_popup() : '<C-g>'
+    imap <c-@> <Plug>(asyncomplete_force_refresh)
+endif
+
 augroup Colors
     autocmd!
     autocmd ColorScheme * call ColorHighlights()
@@ -146,12 +185,13 @@ function! ColorHighlights() abort
     highlight lspReference guibg=#303010
     highlight Normal guibg=#141414 ctermbg=Black
     highlight NonText guibg=#141414 ctermbg=Black
+    " highlight Comment ctermfg=234 ctermbg=019
 
     " The following to 'fix' popup menu fg & bg in onehalfdark. Black on white is nasty.
-    highlight Pmenu ctermfg=231 ctermbg=8 guibg=#242424 guifg=#dcdfe4
-    highlight PmenuSel ctermfg=231 ctermbg=8 guibg=#435277 guifg=#dcdfe4
-    highlight LineNr ctermfg=231 ctermbg=8 guibg=#202020 guifg=#aaaaaa
-    highlight CursorLineNr ctermfg=231 ctermbg=8 guibg=#202020 guifg=#aaaaaa
+    highlight Pmenu ctermfg=230 ctermbg=235 guibg=#242424 guifg=#dcdfe4
+    highlight PmenuSel ctermfg=230 ctermbg=235 guibg=#435277 guifg=#dcdfe4
+    highlight LineNr ctermfg=230 ctermbg=235 guibg=#202020 guifg=#aaaaaa
+    highlight CursorLineNr ctermfg=231 ctermbg=235 guibg=#202020 guifg=#aaaaaa
     highlight GitGutterAdd guibg=#141414
     highlight GitGutterDelete guibg=#141414
     highlight GitGutterChange guibg=#141414
@@ -210,9 +250,15 @@ augroup HaskellGroup
         \ })
     endif
 augroup END
+
 augroup Terraform
     au!
     au BufRead,BufNewFile *.tf,*.tfvars :setlocal ft=terraform
+    " au BufWritePost *.tf,*.tfvars :silent !terraform fmt %
+
+    " Change root detection which causes massive processing and scan on
+    " large repos, every time a .tf file is opened. Can it be cached?
+    let g:lsp_settings_root_markers = ['vars/', 'variables.tf']
 augroup END
 
 " Original source: https://dev.to/moniquelive/haskell-lsp-bonus-for-vim-4nlj
@@ -239,7 +285,7 @@ endfunction
 " Original source: https://dev.to/moniquelive/haskell-lsp-bonus-for-vim-4nlj
 augroup LspInstall
     au!
-    let g:lsp_log_file = expand('~/vim-lsp.log')
+    " let g:lsp_log_file = expand('~/vim-lsp.log')
     let g:lsp_signs_enabled = 1         " enable signs
     let g:lsp_diagnostics_highlights_enabled = 1
     let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
@@ -263,6 +309,21 @@ augroup PythonGroup
     " au FileType python setlocal omnifunc=pythoncomplete#Complete
     au FileType python setlocal completeopt-=longest,preview
     au FileType python let g:jedi#auto_vim_configuration=0
+    let g:lsp_settings = {
+                \   'pyls-all': {
+                \     'workspace_config': {
+                \       'pyls': {
+                \         'configurationSources': ['pycodestyle'],
+                \         'plugins': {
+                \           'pycodestyle': {
+                \             'enabled': v:true,
+                \             'ignore': ['E501']
+                \           },
+                \         }
+                \       }
+                \     }
+                \   },
+                \}
 augroup END
 
 augroup VimGroup
@@ -276,17 +337,17 @@ augroup END
 checktime
 set modelines=5
 syntax on
-set tw=76
+set tw=120
 set et
 set sw=4
 set ts=4
 set t_Co=256
-set mouse=a
+set mouse=
 abbreviate £ #
 set pastetoggle=<F3>
 let mapleader = ','
 let localleader = ','
-set number relativenumber
+set number norelativenumber
 set termguicolors
 set spell spelllang=en_gb
 set spellfile="dictionary.txt"
@@ -295,10 +356,11 @@ set spellfile="dictionary.txt"
 "set statusline=%<\ %n:%f\ %m%r%y%=%-35.(line:\ %l\ of\ %L,\ col:\ %c%V\ (%P)%)
 set laststatus=2
 set omnifunc=syntaxcomplete#Complete
-" set completeopt=preview,menu
-set completeopt=menu
 set statusline+=%{fugitive#statusline()}
 set statusline+=%{ObsessionStatus()}
+set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
 
 set background=dark
 " colorscheme default
@@ -307,13 +369,16 @@ set background=dark
 " colorscheme badwolf
 " colorscheme darkburn
 " colorscheme tigrana-256-dark
-" colorscheme mod8
-colorscheme onehalfdark
+colorscheme mod8
+" colorscheme onehalfdark
+" colorscheme sonokai
+" colorscheme Atelier_CaveDark
+" colorscheme Atelier_DuneDark
 
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
-let g:airline_powerline_fonts = 1
+let g:airline_powerline_fonts = 0
 let g:airline_theme = "wombat"
 let g:airline#extensions#branch#enabled=1
 
@@ -327,6 +392,9 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_mode_map={'mode': 'active', 'passive_filetypes': ['haskell']}
+" let g:UltiSnipsExpandTrigger="<tab>"
+" let g:UltiSnipsJumpForwardTrigger="<c-b>"
+" let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:vista_sidebar_width = 50
 let g:vista_default_executive = 'vim_lsp'
 
@@ -337,16 +405,6 @@ let g:jedi#popup_select_first = 0
 let g:haskellmode_completion_ghc = 0
 let g:acp_enableAtStartup = 0
 
-if isdirectory(expand('~/.vim/plugged/asyncomplete.vim'))
-    inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-    inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
-    " inoremap <expr> <cr> pumvisible() ? asyncomplete#close_popup() . "\<cr>" : "\<cr>"
-    imap <c-space> <Plug>(asyncomplete_force_refresh)
-
-    " Default
-    " let g:asyncomplete_auto_popup = 0
-endif
 
 set tags=tags;/,codex.tags;/
 map <leader>tg :!codex update --force<CR>
@@ -437,11 +495,7 @@ hi Pmenu ctermbg=8
 hi PmenuSel ctermbg=1
 hi PmenuSbar ctermbg=0
 
-" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<C-g>u\<Tab>"
-" inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
 " Handy stuff
-" inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 iabbrev _date <C-r>=strftime("%A, %d %B %Y %H:%M %Z")<cr>
 set wildmenu
 set wildmode=longest:full,full
