@@ -1,0 +1,18 @@
+get-rtb-for-a-subnet () {
+    export REGION=${1:-eu-west-2}
+    export SUBNET_ID=$(aws ec2 describe-subnets --region $REGION | jq '.Subnets[].SubnetId' | fzf --bind 'enter:become(echo {1})')
+    if [[ -z "$SUBNET_ID" ]]; then
+        echo describe-subnets returned nothing for region "$REGION"
+        return
+    fi
+
+    export RTB_ID=$(aws ec2 describe-route-tables --region $REGION --output text --query 'RouteTables[].Associations[?SubnetId=='\`$SUBNET_ID\`'][].RouteTableId')
+    echo Route table ID: $RTB_ID
+    if [[ -z "$RTB_ID" ]]; then
+        echo describe-route-tables returned nothing for subnet: "$SUBNET_ID"
+        return
+    fi
+
+
+    aws ec2 describe-route-tables --region $REGION --route-table-ids "$RTB_ID"
+}
