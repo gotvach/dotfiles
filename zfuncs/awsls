@@ -2,12 +2,7 @@ awsls () {
     NAME=$1
     aws ec2 describe-instances \
         --filters "Name=tag:Name,Values=\"*$NAME*\"" \
-        --query 'Reservations[*].Instances[*].[InstanceId,State.Name,InstanceType,PrivateIpAddress,PublicIpAddress,Tags[?Key==`Name`] |[0].Value] | [] | sort_by(@, &[5])' \
-        --output json | \
-        tr -d '\n[] "' | \
-        perl -pe 's/(i-[0-9])/\n\1/g' | \
-        tr ',' '\t' | \
-        sed -e 's/null/None/g' | \
-        grep '^i-' | \
-        column -t \
-    }
+        --query \
+        'Reservations[*].Instances[*].[InstanceId,ImageId,State.Name,InstanceType,PrivateIpAddress,PublicIpAddress,Tags[?Key==`Name`]|[0].Value,Tags[?Key==`aws:autoscaling:groupName`]|[0].Value,Tags[?Key==`Service`]|[0].Value] | [] | sort_by(@, &[6])' \
+        --output text | column -t
+}
