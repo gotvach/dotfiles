@@ -5,7 +5,10 @@
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-export PATH=$PATH:/opt/homebrew/bin
+export PATH=/opt/homebrew/bin:/opt/homebrew/sbin:/opt/homebrew/opt/ruby@3.2/bin:$PATH
+export LDFLAGS="-L/opt/homebrew/opt/ruby@3.2/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/ruby@3.2/include"
+export PKG_CONFIG_PATH="/opt/homebrew/opt/ruby@3.2/lib/pkgconfig"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -27,6 +30,8 @@ ZSH_THEME="muse"
 # Case-sensitive completion must be off. _ and - will be interchangeable.
 # HYPHEN_INSENSITIVE="true"
 zstyle ':completion:*' menu select
+# zstyle ':completion:*:*:jira:*' completer _jira
+# zstyle ':completion:*:*:jira:numbers-1:*' completer _jira_numbers _jira
 
 # Uncomment one of the following lines to change the auto-update behavior
 zstyle ':omz:update' mode disabled  # disable automatic updates
@@ -133,7 +138,8 @@ fi
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-
+export GOROOT=/opt/homebrew/Cellar/go/1.21.3/libexec
+export GOPATH=~/Projects/go
 export PATH="${PATH}:/Users/grant/Library/Application Support/JetBrains/Toolbox/scripts"
 export PATH="${PATH}:/Users/grant/Library/Application Support/multipass/bin"
 export PATH="${PATH}:${HOME}/.krew/bin:${GOPATH}/bin:${HOME}/bin:/opt/homebrew/bin"
