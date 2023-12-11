@@ -1,0 +1,9 @@
+asgls () {
+    NAME=$1
+    #aws autoscaling describe-auto-scaling-groups --filters "Name=tag:Service,Values=\"*${NAME}*\"" --query 'AutoScalingGroups[].AutoScalingGroupName | sort_by(@,&[0])' --output text
+    if [ -s "${NAME}" ]; then
+        aws autoscaling describe-auto-scaling-groups --filters "Name=tag:Service,Values=\"${NAME}\"" --query 'AutoScalingGroups[].AutoScalingGroupName' --output text | tee
+    else
+        aws autoscaling describe-auto-scaling-groups --query 'AutoScalingGroups[].AutoScalingGroupName' | jq -r '.[]' | fzf --filter hmpo | sort -r | fzf
+    fi
+}
