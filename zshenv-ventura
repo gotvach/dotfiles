@@ -118,6 +118,11 @@ export PROJECT_HOME=$HOME/Project
 
 export PASSWORD_STORE_CLIP_TIME=1200
 export AWS_SHARED_CREDENTIALS_FILE=~/.aws/shared_aws_np
+export SHOW_AWS_PROMPT=false
+
+# OS X - avoid ansible module multiprocessing from causing crash dumps
+# Error: objc[28970]: +[__NSCFConstantString initialize] may have been in progress in another thread when fork() was called.
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 # GPG fix for signing git commits:
 #   "gpg: signing failed: Inappropriate ioctl for device"
