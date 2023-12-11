@@ -15,7 +15,7 @@ export PKG_CONFIG_PATH="/opt/homebrew/opt/ruby@3.2/lib/pkgconfig"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 #ZSH_THEME="robbyrussell"
-ZSH_THEME="muse"
+ZSH_THEME="my-muse"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -90,7 +90,7 @@ plugins=(
     multipass
     terraform
     vault
-    zoxide
+    z
 )
 
 if type brew &> /dev/null; then
@@ -138,7 +138,7 @@ fi
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-export GOROOT=/opt/homebrew/Cellar/go/1.21.3/libexec
+export GOROOT=/opt/homebrew/Cellar/go/1.21.4/libexec
 export GOPATH=~/Projects/go
 export PATH="${PATH}:/Users/grant/Library/Application Support/JetBrains/Toolbox/scripts"
 export PATH="${PATH}:/Users/grant/Library/Application Support/multipass/bin"
