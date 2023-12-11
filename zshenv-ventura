@@ -43,6 +43,9 @@ alias tgrep='grep --exclude-dir=.terraform'
 # Ansible
 alias become='ansible -b -e @~/.gnupg/ansible-sudo.yml --ask-vault-pass'
 alias kansible='ansible -i ~/.ansible/k8s-cluster-hosts.ini'
+alias goss-check-service="ansible -m shell -a 'cd /etc/goss && goss validate -f nagios' -b"
+alias get-lineage="ansible -a 'cat /etc/lineage'"
+alias get-ami="ansible -a 'cat /etc/ami'"
 # alias ansible='ansible -c ~/.config/ansible/ansible.cfg'
 
 # Vault - interesting/useful keys
@@ -67,6 +70,10 @@ alias vtl='vault token lookup'
 alias td='terraform-docker'
 
 alias get-paloalto-pass='vault read -field=admin_password secret/np-ho-hmpo-prp1-i-pla-bc/HMPO/PaloAlto | pbcopy'
+
+# jira
+alias jv='jira'
+alias jb='jira browse'
 
 # Git shell aliases
 alias gpa='git pull --all'
@@ -93,7 +100,7 @@ alias locate="locate -d ${LOCATE_DB}"
 alias updatedb="SEARCHPATHS=$HOME FCODES=${LOCATE_DB} /usr/libexec/locate.updatedb"
 
 # alias emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
-alias plantuml='java -jar /usr/share/plantuml/plantuml.jar'
+alias plantuml='java -jar /opt/homebrew/Cellar/plantuml/1.2023.12/libexec/plantuml.jar'
 
 # Terraform
 alias plan='tf plan -lock=false'
